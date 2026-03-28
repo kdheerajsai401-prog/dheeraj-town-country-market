@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Town & Country Market — Your New Website</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --teal: #14b8a6;
+      --teal-dark: #0d9488;
+      --gold: #d97706;
+      --text: #1c1a17;
+      --muted: #78716c;
+      --surface: #f5f4f1;
+      --white: #faf9f7;
+      --border: #e5e2dc;
+      --green: #16a34a;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      background: #fff;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── COVER PAGE ── */
+    .cover {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f2922 0%, #0d3b30 50%, #0a1f1a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse at center, rgba(20,184,166,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .cover h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .cover h1 span { color: var(--teal); }
+
+    .cover-sub {
+      font-size: clamp(16px, 2.5vw, 22px);
+      color: rgba(255,255,255,0.65);
+      max-width: 560px;
+      margin: 0 auto 48px;
+    }
+
+    .cover-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 48px;
+    }
+
+    .cover-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cover-stat-num {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--teal);
+    }
+
+    .cover-stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .cover-divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(to right, var(--teal), var(--teal-dark));
+      border-radius: 2px;
+      margin: 32px auto;
+    }
+
+    .cover-url {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── PAGE LAYOUT ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 64px 40px;
+    }
+
+    @media print {
+      .page { padding: 40px; }
+      .cover { min-height: auto; padding: 80px 40px; }
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section-label {
+      display: inline-block;
+      background: rgba(20,184,166,0.1);
+      color: var(--teal-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: clamp(24px, 3.5vw, 36px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 620px;
+      margin-bottom: 40px;
+    }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 56px 0;
+    }
+
+    /* ── SCREENSHOT BOXES ── */
+    .screenshot {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 28px 0;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+
+    .screenshot-bar {
+      background: #e8e6e1;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .screenshot-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .screenshot-url {
+      flex: 1;
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'Courier New', monospace;
+      margin-left: 8px;
+    }
+
+    .screenshot-body {
+      padding: 28px 32px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .screenshot-body.dark {
+      background: #0f2922;
+      color: #e5e2dc;
+    }
+
+    .screenshot-label {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(20,184,166,0.15);
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .mock-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+
+    .mock-logo {
+      width: 28px;
+      height: 28px;
+      background: var(--teal);
+      border-radius: 8px;
+    }
+
+    .mock-nav-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .mock-link {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .mock-hero-text {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mock-h1 {
+      height: 28px;
+      width: 55%;
+      background: rgba(255,255,255,0.85);
+      border-radius: 6px;
+    }
+
+    .mock-h1-sub {
+      height: 28px;
+      width: 40%;
+      background: var(--teal);
+      opacity: 0.7;
+      border-radius: 6px;
+    }
+
+    .mock-p {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .mock-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(to right, var(--teal), var(--teal-dark));
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      width: fit-content;
+      margin-top: 8px;
+    }
+
+    .mock-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .mock-chip {
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .mock-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .mock-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mock-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .mock-card-text {
+      height: 7px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.2);
+      width: 70%;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── WHY SECTION ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    @media (max-width: 600px) {
+      .why-grid { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+
+    .why-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .why-card.accent {
+      background: linear-gradient(135deg, #0f2922, #0d3b30);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .why-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .why-card.accent h3 { color: #fff; }
+
+    .why-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .why-card.accent p { color: rgba(255,255,255,0.65); }
+
+    .stat-big {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--teal);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    /* ── PAGES LIST ── */
+    .pages-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .page-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+
+    .page-num {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      color: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .page-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .page-info p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .page-url {
+      font-size: 11px;
+      color: var(--teal);
+      font-family: 'Courier New', monospace;
+      background: rgba(20,184,166,0.08);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    /* ── NEXT STEPS ── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .step-card {
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step-badge {
+      display: inline-block;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    .step-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .step-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── CTA ── */
+    .cta-box {
+      background: linear-gradient(135deg, #0f2922 0%, #0a2d24 100%);
+      border-radius: 24px;
+      padding: 48px;
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .cta-box h2 { color: #fff; margin-bottom: 12px; }
+    .cta-box p { color: rgba(255,255,255,0.6); margin-bottom: 28px; font-size: 15px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(to right, var(--teal), var(--teal-dark));
+      color: #fff;
+      padding: 14px 36px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(20,184,166,0.5);
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: rgba(20,184,166,0.07);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .callout strong { color: var(--teal-dark); }
+
+    /* ── PRINT ── */
+    @media print {
+      body { font-size: 13px; }
+      .cover { page-break-after: always; }
+      hr.divider { margin: 36px 0; }
+    }
+
+    .green-badge {
+      display: inline-block;
+      background: rgba(22,163,74,0.1);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════
+     COVER PAGE
+════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Prepared for the owner · March 2026</div>
+
+  <h1>Town &amp; Country Market<br /><span>— Online, and Ready.</span></h1>
+  <p class="cover-sub">
+    Your store now has a professional website that works on every phone, tablet, and computer — 24 hours a day, just like you are.
+  </p>
+
+  <div class="cover-divider"></div>
+
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <span class="cover-stat-num">5</span>
+      <span class="cover-stat-label">Pages</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">495+</span>
+      <span class="cover-stat-label">Products Listed</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">2</span>
+      <span class="cover-stat-label">Locations on Map</span>
+    </div>
+    <div class="cover-stat">
+      <span class="cover-stat-num">24/7</span>
+      <span class="cover-stat-label">Always Online</span>
+    </div>
+  </div>
+
+  <div style="margin-top: 48px;">
+    <span class="cover-url">dheeraj-town-country-market.vercel.app</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════
+     SECTION 1 — WHAT WE BUILT
+════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <span class="section-label">Overview</span>
+  <h2>What we built for you</h2>
+  <p class="section-desc">
+    A complete website for Town &amp; Country Market — showcasing both Mississauga locations, your full product range pulled live from Uber Eats, a photo gallery, and a direct link for customers to place orders.
+  </p>
+
+  <!-- Mock homepage screenshot -->
+  <div class="screenshot">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#ffbd2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-url">townandcountrymarket.ca &nbsp;·&nbsp; Home</div>
+    </div>
+    <div class="screenshot-body dark">
+      <span class="screenshot-label">Home Page</span>
+      <!-- Simulated nav -->
+      <div class="mock-nav">
+        <div class="mock-logo"></div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="height:6px;width:80px;background:rgba(255,255,255,0.8);border-radius:3px;"></div>
+          <div style="height:4px;width:40px;background:rgba(255,255,255,0.3);border-radius:2px;"></div>
+        </div>
+        <div class="mock-nav-links">
+          <div class="mock-link" style="width:48px;"></div>
+          <div class="mock-link" style="width:72px;"></div>
+          <div class="mock-link" style="width:52px;"></div>
+          <div class="mock-link" style="width:44px;"></div>
+        </div>
+        <div style="margin-left:auto;" class="mock-btn">Order Now</div>
+      </div>
+      <!-- Hero text -->
+      <div class="mock-hero-text">
+        <div class="mock-h1"></div>
+        <div class="mock-h1-sub"></div>
+        <div class="mock-p" style="width:65%;margin-top:4px;"></div>
+        <div class="mock-p" style="width:50%;"></div>
+        <div style="margin-top:8px;display:flex;gap:10px;">
+          <div class="mock-btn">🛒 &nbsp;Order Now</div>
+          <div style="padding:8px 20px;border:1px solid rgba(255,255,255,0.25);border-radius:100px;font-size:13px;color:rgba(255,255,255,0.6);">Our Locations</div>
+        </div>
+      </div>
+      <!-- Category chips -->
+      <div class="mock-chips" style="margin-top:16px;">
+        <div class="mock-chip" style="background:rgba(20,184,166,0.15);color:var(--teal);">🥦 Produce</div>
+        <div class="mock-chip" style="background:rgba(217,119,6,0.15);color:var(--gold);">🥐 Bakery</div>
+        <div class="mock-chip" style="background:rgba(96,165,250,0.15);color:#60a5fa;">🥛 Dairy</div>
+        <div class="mock-chip" style="background:rgba(248,113,113,0.15);color:#f87171;">🍺 Beer &amp; Wine</div>
+        <div class="mock-chip" style="background:rgba(167,243,208,0.15);color:#6ee7b7;">❄️ Frozen</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>No technical knowledge needed</strong> — your customers can find and use the website without any help. It works just like any other website they already visit.
+  </div>
+
+  <hr class="divider" />
+
+
+<!-- ════════════════════════════════════════════════════
+     SECTION 2 — THE PAGES
+════════════════════════════════════════════════════ -->
+
+  <span class="section-label">The Website</span>
+  <h2>Five pages, each with a purpose</h2>
+  <p class="section-desc">
+    Every page is designed to help your customers find what they need — and take action.
+  </p>
+
+  <div class="pages-list">
+    <div class="page-item">
+      <div class="page-num">1</div>
+      <div class="page-info">
+        <h3>Home Page</h3>
+        <p>The first impression. Shows your store, categories, featured products, customer reviews, and a direct button to order on Uber Eats. Works beautifully on phones.</p>
+        <span class="page-url">/</span>
+      </div>
+    </div>
+
+    <div class="page-item">
+      <div class="page-num">2</div>
+      <div class="page-info">
+        <h3>Our Selection</h3>
+        <p>Every single product from your Uber Eats menu — searchable and organised into categories. <strong>This updates automatically</strong> every 24 hours from your live Uber Eats store. Over 495 products, always current.</p>
+        <span class="page-url">/selection</span>
+      </div>
+    </div>
+
+    <div class="page-item">
+      <div class="page-num">3</div>
+      <div class="page-info">
+        <h3>Locations</h3>
+        <p>Both Mississauga locations shown on an interactive map with your address, phone number, and a one-tap "Get Directions" button for customers driving in.</p>
+        <span class="page-url">/locations</span>
+      </div>
+    </div>
+
+    <div class="page-item">
+      <div class="page-num">4</div>
+      <div class="page-info">
+        <h3>Gallery</h3>
+        <p>A visual tour of your store with a stunning scroll animation — photos zoom in as visitors scroll down. Currently showing your Google Maps store photos; more can be added anytime.</p>
+        <span class="page-url">/gallery</span>
+      </div>
+    </div>
+
+    <div class="page-item">
+      <div class="page-num">5</div>
+      <div class="page-info">
+        <h3>Order Online</h3>
+        <p>A dedicated page highlighting the convenience of Uber Eats delivery — links directly to your store so customers can order without leaving the website.</p>
+        <span class="page-url">/order</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+
+<!-- ════════════════════════════════════════════════════
+     SECTION 3 — KEY FEATURES
+════════════════════════════════════════════════════ -->
+
+  <span class="section-label">Features</span>
+  <h2>What makes this website stand out</h2>
+  <p class="section-desc">
+    Not just a basic website — it's built with the kind of details usually seen on large retail brands.
+  </p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(20,184,166,0.1);">📱</div>
+      <h3>Works on Every Device</h3>
+      <p>Looks perfect on phones, tablets, and computers. Most of your customers will find you on a phone — this site is built for that.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(217,119,6,0.1);">🔄</div>
+      <h3>Live Uber Eats Menu</h3>
+      <p>Your product list is pulled directly from Uber Eats every day. You never have to update the website manually — it just stays in sync.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(96,165,250,0.1);">🔍</div>
+      <h3>Product Search</h3>
+      <p>Customers can type any product name and instantly find it. Great for people checking if you carry something before coming in.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(167,243,208,0.1);">🌙</div>
+      <h3>Dark &amp; Light Mode</h3>
+      <p>The website automatically matches the customer's phone or computer preference — bright in the day, easy on the eyes at night.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(248,113,113,0.1);">🗺️</div>
+      <h3>Both Locations on a Map</h3>
+      <p>Interactive maps for Duke of York and Hurontario. One tap to get directions — no need to copy the address anywhere.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(250,204,21,0.1);">⭐</div>
+      <h3>Customer Reviews</h3>
+      <p>Real 5-star reviews from your customers scroll continuously on the home page — building trust before someone even walks in.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(20,184,166,0.1);">🖼️</div>
+      <h3>Animated Photo Gallery</h3>
+      <p>A cinematic gallery page where photos zoom in as you scroll. Makes visitors feel like they're stepping inside the store.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(22,163,74,0.1);">🛒</div>
+      <h3>"Order Now" in the Header</h3>
+      <p>Every single page has a prominent "Order Now" button that takes customers straight to your Uber Eats store — no searching required.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+
+<!-- ════════════════════════════════════════════════════
+     SECTION 4 — WHY THIS MATTERS
+════════════════════════════════════════════════════ -->
+
+  <span class="section-label">Why It Matters</span>
+  <h2>The real impact for your business</h2>
+  <p class="section-desc">
+    A good website isn't just about looking nice — it directly affects how many customers walk through your door and order online.
+  </p>
+
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="stat-big">81%</div>
+      <h3>of customers search online first</h3>
+      <p>Before visiting a store, most people Google it. Without a website, you're invisible to them — and they go somewhere else.</p>
+    </div>
+
+    <div class="why-card">
+      <div class="stat-big">3×</div>
+      <h3>more likely to choose a business with a website</h3>
+      <p>A professional online presence signals that you're a serious, trustworthy business — especially for new customers who don't know you yet.</p>
+    </div>
+
+    <div class="why-card accent">
+      <h3>🕛 Open at 2am? So is your website.</h3>
+      <p>Even when the store is at its busiest — or quietest — your website is doing the work. Customers can browse, check prices, and place Uber Eats orders any time of day.</p>
+    </div>
+
+    <div class="why-card">
+      <div class="stat-big">📍</div>
+      <h3>Two locations, one place to find them</h3>
+      <p>Customers no longer need to call to ask which location is closer. The website shows both stores on a map and gives directions instantly.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Bottom line:</strong> Your competitors may not have a website like this. This is a real advantage — customers searching for a 24/7 convenience store in Mississauga will find <em>you</em> first.
+  </div>
+
+  <hr class="divider" />
+
+
+<!-- ════════════════════════════════════════════════════
+     SECTION 5 — SELECTION PAGE HIGHLIGHT
+════════════════════════════════════════════════════ -->
+
+  <span class="section-label">Highlight</span>
+  <h2>Your full product range — always up to date</h2>
+  <p class="section-desc">
+    The selection page is one of the most powerful features. Here's what it looks like:
+  </p>
+
+  <div class="screenshot">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#ffbd2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-url">townandcountrymarket.ca/selection</div>
+    </div>
+    <div class="screenshot-body" style="background:#faf9f7;">
+      <span class="screenshot-label">Our Selection Page</span>
+      <!-- Search bar mock -->
+      <div style="background:#fff;border:1px solid #e5e2dc;border-radius:100px;padding:10px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+        <span style="font-size:14px;color:#78716c;">🔍</span>
+        <span style="font-size:13px;color:#a8a29e;">Search 495 products — try "milk", "bread", "chips"…</span>
+      </div>
+      <!-- Category chips -->
+      <div class="mock-chips">
+        <div class="mock-chip" style="background:#e0f2f1;color:#00796b;">🥦 Fresh Produce</div>
+        <div class="mock-chip" style="background:#fff3e0;color:#e65100;">🥐 Bakery</div>
+        <div class="mock-chip" style="background:#e3f2fd;color:#1565c0;">🥛 Dairy &amp; Eggs</div>
+        <div class="mock-chip" style="background:#fce4ec;color:#880e4f;">🍷 Beer &amp; Wine</div>
+        <div class="mock-chip" style="background:#e8eaf6;color:#283593;">❄️ Frozen</div>
+      </div>
+      <!-- Product cards mock -->
+      <div class="mock-cards">
+        <div class="mock-card" style="background:#fff;border-color:#e5e2dc;">
+          <div class="mock-card-icon" style="background:#e0f2f1;"></div>
+          <div class="mock-card-text" style="background:#e5e2dc;"></div>
+          <div style="height:5px;width:40%;background:#f5c518;border-radius:3px;margin-top:2px;"></div>
+        </div>
+        <div class="mock-card" style="background:#fff;border-color:#e5e2dc;">
+          <div class="mock-card-icon" style="background:#fff3e0;"></div>
+          <div class="mock-card-text" style="background:#e5e2dc;"></div>
+          <div style="height:5px;width:35%;background:#f5c518;border-radius:3px;margin-top:2px;"></div>
+        </div>
+        <div class="mock-card" style="background:#fff;border-color:#e5e2dc;">
+          <div class="mock-card-icon" style="background:#fce4ec;"></div>
+          <div class="mock-card-text" style="background:#e5e2dc;"></div>
+          <div style="height:5px;width:50%;background:#f5c518;border-radius:3px;margin-top:2px;"></div>
+        </div>
+        <div class="mock-card" style="background:#fff;border-color:#e5e2dc;">
+          <div class="mock-card-icon" style="background:#e8eaf6;"></div>
+          <div class="mock-card-text" style="background:#e5e2dc;"></div>
+          <div style="height:5px;width:42%;background:#f5c518;border-radius:3px;margin-top:2px;"></div>
+        </div>
+        <div class="mock-card" style="background:#fff;border-color:#e5e2dc;">
+          <div class="mock-card-icon" style="background:#e0f2f1;"></div>
+          <div class="mock-card-text" style="background:#e5e2dc;"></div>
+          <div style="height:5px;width:38%;background:#f5c518;border-radius:3px;margin-top:2px;"></div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#a8a29e;margin-top:6px;">Showing 495 products across 33 categories · Updated daily from Uber Eats</p>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:14px;margin-top:8px;">
+    Customers can search by name, browse by category, or scroll through everything. Each product shows the real price from your Uber Eats store. <strong>You never have to touch it.</strong>
+  </p>
+
+  <hr class="divider" />
+
+
+<!-- ════════════════════════════════════════════════════
+     SECTION 6 — NEXT STEPS
+════════════════════════════════════════════════════ -->
+
+  <span class="section-label">Phase 2</span>
+  <h2>What can come next</h2>
+  <p class="section-desc">
+    What's already built is fully working and ready to share. These are optional upgrades available whenever you're ready.
+  </p>
+
+  <div class="steps-grid">
+    <div class="step-card">
+      <span class="step-badge">Domain</span>
+      <h3>Your Own Website Address</h3>
+      <p>Instead of a temporary link, get a proper address like <strong>townandcountrymarket.ca</strong> — looks professional and is easy to print on bags, receipts, or signs.</p>
+    </div>
+
+    <div class="step-card">
+      <span class="step-badge">Photos</span>
+      <h3>Professional Store Photos</h3>
+      <p>Replace the current gallery with professional photos of your store, staff, and products. Makes a big difference in how new customers perceive the business.</p>
+    </div>
+
+    <div class="step-card">
+      <span class="step-badge">Content</span>
+      <h3>Manage Your Own Content</h3>
+      <p>An easy admin panel where you (or a staff member) can update specials, announcements, or add new photos — no technical knowledge required.</p>
+    </div>
+
+    <div class="step-card">
+      <span class="step-badge">Marketing</span>
+      <h3>Google Search Listing</h3>
+      <p>Set up your website so it appears at the top of Google searches for "24 hour convenience store Mississauga" and similar searches customers are already doing.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+
+<!-- ════════════════════════════════════════════════════
+     CTA
+════════════════════════════════════════════════════ -->
+
+  <div class="cta-box">
+    <h2>Ready to go live?</h2>
+    <p>The website is already built and working. The next step is connecting it to your own domain and making it official. Everything else is already done.</p>
+    <a href="#" class="cta-btn">See the Live Website →</a>
+    <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.4);">dheeraj-town-country-market.vercel.app</p>
+  </div>
+
+  <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:40px;padding-bottom:40px;">
+    Prepared March 2026 &nbsp;·&nbsp; Town &amp; Country Market Website Proposal
+  </p>
+
+</div>
+
+</body>
+</html>
