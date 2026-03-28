@@ -6,25 +6,28 @@ import { CATEGORIES } from "@/lib/content"
 import { ICON_MAP } from "@/lib/icons"
 import { slugify } from "@/lib/utils"
 import { ChevronRight } from "lucide-react"
+import { useTheme } from "@/components/ui/ThemeProvider"
 
 const CARD_COLORS = [
-  { bg: "#e0f2f1", color: "#00796b" },
-  { bg: "#fff3e0", color: "#e65100" },
-  { bg: "#e3f2fd", color: "#1565c0" },
-  { bg: "#f3e5f5", color: "#6a1b9a" },
-  { bg: "#fbe9e7", color: "#bf360c" },
-  { bg: "#fffde7", color: "#f57f17" },
-  { bg: "#e8eaf6", color: "#283593" },
-  { bg: "#e1f5fe", color: "#01579b" },
-  { bg: "#fce4ec", color: "#880e4f" },
-  { bg: "#efebe9", color: "#4e342e" },
-  { bg: "#f9fbe7", color: "#33691e" },
-  { bg: "#f3e8ff", color: "#7e22ce" },
+  { light: { bg: "#e0f2f1", color: "#00796b" }, dark: { bg: "#0d2420", color: "#4db6ac" } },
+  { light: { bg: "#fff3e0", color: "#e65100" }, dark: { bg: "#2e1900", color: "#ffb74d" } },
+  { light: { bg: "#e3f2fd", color: "#1565c0" }, dark: { bg: "#0d1d3a", color: "#64b5f6" } },
+  { light: { bg: "#f3e5f5", color: "#6a1b9a" }, dark: { bg: "#1e0e30", color: "#ce93d8" } },
+  { light: { bg: "#fbe9e7", color: "#bf360c" }, dark: { bg: "#2e0f00", color: "#ff8a65" } },
+  { light: { bg: "#fffde7", color: "#f57f17" }, dark: { bg: "#2e2600", color: "#fff176" } },
+  { light: { bg: "#e8eaf6", color: "#283593" }, dark: { bg: "#0e1232", color: "#9fa8da" } },
+  { light: { bg: "#e1f5fe", color: "#01579b" }, dark: { bg: "#0d1e2e", color: "#4fc3f7" } },
+  { light: { bg: "#fce4ec", color: "#880e4f" }, dark: { bg: "#2e0018", color: "#f48fb1" } },
+  { light: { bg: "#efebe9", color: "#4e342e" }, dark: { bg: "#1e1009", color: "#bcaaa4" } },
+  { light: { bg: "#f9fbe7", color: "#33691e" }, dark: { bg: "#161e0a", color: "#aed581" } },
+  { light: { bg: "#f3e8ff", color: "#7e22ce" }, dark: { bg: "#1a0e2e", color: "#c084fc" } },
 ]
 
 export function CategoryStrip() {
+  const { theme } = useTheme()
+
   return (
-    <section className="py-12 sm:py-20 bg-white">
+    <section className="py-12 sm:py-20 bg-warm-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           className="flex items-center justify-between mb-8"
@@ -46,6 +49,7 @@ export function CategoryStrip() {
           {CATEGORIES.map((cat, i) => {
             const Icon = ICON_MAP[cat.icon]
             const palette = CARD_COLORS[i % CARD_COLORS.length]
+            const colors = theme === "dark" ? palette.dark : palette.light
             return (
               <motion.div
                 key={cat.id}
@@ -61,16 +65,16 @@ export function CategoryStrip() {
                 <Link
                   href={`/selection#${slugify(cat.name)}`}
                   className="group flex flex-col items-center gap-3 rounded-card p-4 sm:p-5 text-center transition-transform hover:scale-105"
-                  style={{ backgroundColor: palette.bg }}
+                  style={{ backgroundColor: colors.bg }}
                 >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/60 flex items-center justify-center">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 flex items-center justify-center">
                     {Icon && (
-                      <Icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: palette.color }} />
+                      <Icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: colors.color }} />
                     )}
                   </div>
                   <span
                     className="text-xs sm:text-sm font-semibold leading-tight"
-                    style={{ color: palette.color }}
+                    style={{ color: colors.color }}
                   >
                     {cat.name}
                   </span>
