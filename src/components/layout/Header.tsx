@@ -7,6 +7,7 @@ import { Menu, X, Search, ShoppingBasket, Phone } from "lucide-react"
 import { CATEGORIES } from "@/lib/content"
 import { ICON_MAP } from "@/lib/icons"
 import { cn, slugify } from "@/lib/utils"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
 
 const TOP_NAV = [
   { label: "Home", href: "/" },
@@ -32,7 +33,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* ── Row 1: Top bar ── */}
-      <div className="bg-white border-b border-gray-100 shadow-sm">
+      <div className="bg-warm-white border-b border-warm-surface shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-14 items-center gap-4">
 
@@ -67,7 +68,7 @@ export function Header() {
                       "px-3 py-1.5 text-[13px] font-semibold rounded-lg transition-colors",
                       active
                         ? "bg-teal/10 text-teal"
-                        : "text-warm-muted hover:text-warm-text hover:bg-gray-50"
+                        : "text-warm-muted hover:text-warm-text hover:bg-warm-surface/60"
                     )}
                   >
                     {item.label}
@@ -79,7 +80,7 @@ export function Header() {
             {/* Search bar — always visible on sm+ */}
             <form
               onSubmit={handleNavSearch}
-              className="flex-1 max-w-sm mx-auto sm:flex hidden items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 hover:border-teal/50 hover:bg-white transition-all group shadow-sm focus-within:border-teal/50 focus-within:bg-white"
+              className="flex-1 max-w-sm mx-auto sm:flex hidden items-center gap-2.5 bg-warm-surface/60 border border-warm-surface rounded-full px-4 py-2 hover:border-teal/50 hover:bg-warm-white transition-all group shadow-sm focus-within:border-teal/50 focus-within:bg-warm-white"
             >
               <Search className="w-3.5 h-3.5 text-warm-muted group-hover:text-teal transition-colors shrink-0" />
               <input
@@ -89,7 +90,7 @@ export function Header() {
                 placeholder="Search products..."
                 className="text-xs text-warm-text flex-1 bg-transparent outline-none placeholder:text-warm-muted"
               />
-              <span className="hidden lg:inline text-[10px] text-warm-muted/60 bg-gray-100 rounded px-1.5 py-0.5 font-mono">
+              <span className="hidden lg:inline text-[10px] text-warm-muted/60 bg-warm-surface rounded px-1.5 py-0.5 font-mono">
                 ↵
               </span>
             </form>
@@ -103,17 +104,20 @@ export function Header() {
               (905) 275-8696
             </a>
 
+            {/* Theme toggle */}
+            <ThemeToggle />
+
             {/* Mobile: search icon + hamburger */}
-            <div className="md:hidden ml-auto flex items-center gap-1">
+            <div className="md:hidden flex items-center gap-1">
               <Link
                 href="/selection"
-                className="flex items-center justify-center w-9 h-9 rounded-lg text-warm-muted hover:text-teal hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center w-9 h-9 rounded-lg text-warm-muted hover:text-teal hover:bg-warm-surface/60 transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-4.5 h-4.5 w-[18px] h-[18px]" />
               </Link>
               <button
-                className="flex items-center justify-center w-9 h-9 rounded-lg text-warm-text hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-center w-9 h-9 rounded-lg text-warm-text hover:bg-warm-surface/60 transition-colors"
                 onClick={() => setOpen(!open)}
                 aria-label={open ? "Close menu" : "Open menu"}
                 aria-expanded={open}
@@ -149,7 +153,7 @@ export function Header() {
       {/* ── Mobile drawer ── */}
       <div
         className={cn(
-          "md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-white border-b border-gray-100",
+          "md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-warm-white border-b border-warm-surface",
           open ? "max-h-screen shadow-lg" : "max-h-0"
         )}
       >
@@ -157,7 +161,7 @@ export function Header() {
           {/* Search on mobile */}
           <form
             onSubmit={handleNavSearch}
-            className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-3 focus-within:border-teal/50 transition-colors"
+            className="flex items-center gap-2.5 bg-warm-surface/60 border border-warm-surface rounded-xl px-4 py-2.5 mb-3 focus-within:border-teal/50 transition-colors"
           >
             <Search className="w-4 h-4 text-warm-muted shrink-0" />
             <input
@@ -179,7 +183,7 @@ export function Header() {
                   "px-4 py-3 text-[15px] font-semibold rounded-xl transition-colors",
                   active
                     ? "bg-teal/10 text-teal"
-                    : "text-warm-text hover:bg-gray-50"
+                    : "text-warm-text hover:bg-warm-surface/60"
                 )}
                 onClick={() => setOpen(false)}
               >
@@ -188,10 +192,10 @@ export function Header() {
             )
           })}
 
-          <div className="mt-3 pt-3 border-t border-gray-100">
+          <div className="mt-3 pt-3 border-t border-warm-surface">
             <a
               href="tel:+19052758696"
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-warm-muted hover:text-teal transition-colors rounded-xl hover:bg-gray-50"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-warm-muted hover:text-teal transition-colors rounded-xl hover:bg-warm-surface/60"
             >
               <Phone className="w-4 h-4" />
               (905) 275-8696

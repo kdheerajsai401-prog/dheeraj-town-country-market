@@ -29,6 +29,28 @@
   --radius-pill: 9999px;
 }
 
+/* GlowCard theme-aware CSS vars */
+:root {
+  --glow-backdrop: hsl(0 0% 100%);
+  --glow-border: hsl(0 0% 88%);
+  --glow-lightness: 30;
+}
+
+/* Dark theme — flip the warm palette */
+html.dark {
+  --color-warm-white: #0f0f0e;
+  --color-warm-surface: #1c1b18;
+  --color-warm-text: #f5f0e8;
+  --color-warm-muted: #a09880;
+  --color-gold: #d4a56a;
+  --color-gold-hover: #c49460;
+  /* GlowCard: higher lightness so glow is visible on dark bg */
+  --glow-backdrop: #1c1b18;
+  --glow-border: hsl(0 0% 22%);
+  --glow-lightness: 50;
+  color-scheme: dark;
+}
+
 /* Base resets */
 *,
 *::before,
@@ -43,8 +65,8 @@ html {
 }
 
 body {
-  background-color: #faf9f7;
-  color: #1a1916;
+  background-color: var(--color-warm-white);
+  color: var(--color-warm-text);
   font-family: var(--font-sans);
   line-height: 1.6;
 }

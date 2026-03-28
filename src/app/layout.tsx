@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Plus_Jakarta_Sans } from "next/font/google"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
+import { ThemeProvider } from "@/components/ui/ThemeProvider"
 import { SITE, LOCATIONS } from "@/lib/content"
 import "./globals.css"
 
@@ -68,15 +69,23 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plusJakarta.variable} h-full`} suppressHydrationWarning>
       <head>
+        {/* Anti-FOUC: apply saved theme class before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}})()`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="min-h-full flex flex-col bg-warm-white text-warm-text font-sans antialiased">
-        <Header />
-        <div className="flex-1">{children}</div>
-        <Footer />
+        <ThemeProvider>
+          <Header />
+          <div className="flex-1">{children}</div>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   )

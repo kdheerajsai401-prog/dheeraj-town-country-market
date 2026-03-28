@@ -65,15 +65,14 @@ const GlowCard: React.FC<GlowCardProps> = ({
       '--spread': spread,
       '--radius': '14',
       '--border': '2',
-      // Light-theme overrides:
-      // --lightness 30 → after brightness(2) in ::before = 60% = vivid color, not washed-out white
-      '--lightness': '30',
+      // Theme-aware via CSS vars in globals.css:
+      // Light: --glow-lightness=30 → after brightness(2)=60% vivid, --glow-backdrop=white
+      // Dark:  --glow-lightness=50 → after brightness(2)=100% white glow on dark, --glow-backdrop=#1c1b18
+      '--lightness': 'var(--glow-lightness, 30)',
       '--saturation': '100',
       '--bg-spot-opacity': '0.08',
-      // Solid white card so it stands out from the warm-surface page background
-      '--backdrop': 'hsl(0 0% 100%)',
-      // Visible neutral border at rest; glow replaces it when cursor is near
-      '--backup-border': 'hsl(0 0% 88%)',
+      '--backdrop': 'var(--glow-backdrop, hsl(0 0% 100%))',
+      '--backup-border': 'var(--glow-border, hsl(0 0% 88%))',
       '--size': '300',
       '--outer': '1',
       '--border-size': 'calc(var(--border, 2) * 1px)',
