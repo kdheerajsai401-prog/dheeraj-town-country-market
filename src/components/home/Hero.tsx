@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { UberEatsButton } from "@/components/ui/UberEatsButton"
 import { motion, useScroll, useTransform } from "motion/react"
 import { useRef } from "react"
 import { Clock, MapPin } from "lucide-react"
@@ -107,14 +107,12 @@ export function Hero() {
                 <MapPin size={18} />
                 <span className="text-sm font-medium">2 Locations in Mississauga</span>
               </div>
-              <Link
-                href={SITE.uberEatsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <UberEatsButton
+                webUrl={SITE.uberEatsUrl}
                 className="flex items-center gap-2 bg-gold hover:bg-gold/90 transition-colors px-5 py-3 rounded-full text-white text-sm font-semibold"
               >
                 Order on Uber Eats
-              </Link>
+              </UberEatsButton>
             </motion.div>
           </motion.div>
 

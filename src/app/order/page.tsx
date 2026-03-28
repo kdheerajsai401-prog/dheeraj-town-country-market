@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { SectionWrapper } from "@/components/ui/SectionWrapper"
-import { Button } from "@/components/ui/Button"
+import { UberEatsButton } from "@/components/ui/UberEatsButton"
 import { Badge } from "@/components/ui/Badge"
 import { SITE } from "@/lib/content"
 import { ShoppingBag, Clock, MapPin, Zap } from "lucide-react"
@@ -44,10 +44,13 @@ export default function OrderPage() {
               Can&apos;t make it in? Get your groceries, snacks, beverages, and everyday
               essentials delivered straight to your door — any time of day or night.
             </p>
-            <Button href={SITE.uberEatsUrl} external size="lg">
+            <UberEatsButton
+              webUrl={SITE.uberEatsUrl}
+              className="inline-flex items-center justify-center gap-2 font-semibold rounded-pill transition-colors duration-200 bg-teal text-white hover:bg-teal-dark px-8 py-4 text-base"
+            >
               <ShoppingBag className="w-5 h-5" />
               Open on Uber Eats
-            </Button>
+            </UberEatsButton>
           </div>
         </SectionWrapper>
       </div>

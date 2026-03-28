@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react"
 import { SectionWrapper } from "@/components/ui/SectionWrapper"
-import { Button } from "@/components/ui/Button"
+import { UberEatsButton } from "@/components/ui/UberEatsButton"
 import { SITE } from "@/lib/content"
 import { ShoppingBag } from "lucide-react"
 
@@ -51,15 +51,13 @@ export function UberEatsBanner() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <Button
-              href={SITE.uberEatsUrl}
-              external
-              size="lg"
-              className="bg-white hover:bg-teal-light text-teal font-bold"
+            <UberEatsButton
+              webUrl={SITE.uberEatsUrl}
+              className="inline-flex items-center justify-center gap-2 font-semibold rounded-pill transition-colors duration-200 bg-white hover:bg-teal-light text-teal font-bold px-8 py-4 text-base"
             >
               <ShoppingBag className="w-5 h-5" />
               Order on Uber Eats
-            </Button>
+            </UberEatsButton>
           </motion.div>
         </motion.div>
       </div>
