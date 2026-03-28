@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import { SectionWrapper } from "@/components/ui/SectionWrapper"
 import { SelectionSearch } from "@/components/selection/SelectionSearch"
-import { CATEGORIES, SAMPLE_PRODUCTS } from "@/lib/content"
+import { fetchUberEatsMenu } from "@/lib/uber-eats-menu"
+
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: "Our Selection | Town & Country Market — Mississauga",
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
     "Browse what we carry: fresh produce, home-made bakery, dairy, beer & wine, frozen foods, chocolates, rice, lottery, and more — at Town & Country Market in Mississauga.",
 }
 
-export default function SelectionPage() {
+export default async function SelectionPage() {
+  const { categories, products } = await fetchUberEatsMenu()
+
   return (
     <main>
       {/* Page header */}
@@ -28,7 +32,7 @@ export default function SelectionPage() {
 
       {/* Searchable category list */}
       <SectionWrapper className="py-12 sm:py-16">
-        <SelectionSearch categories={CATEGORIES} products={SAMPLE_PRODUCTS} />
+        <SelectionSearch categories={categories} products={products} />
       </SectionWrapper>
     </main>
   )
