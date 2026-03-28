@@ -13,7 +13,7 @@ const TOP_NAV = [
   { label: "Home", href: "/" },
   { label: "Our Selection", href: "/selection" },
   { label: "Locations", href: "/locations" },
-  { label: "Order Online", href: "/order" },
+  { label: "Gallery", href: "/gallery" },
 ]
 
 export function Header() {
