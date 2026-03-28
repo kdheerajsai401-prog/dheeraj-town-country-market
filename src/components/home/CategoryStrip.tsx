@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { motion } from "motion/react"
 import { CATEGORIES } from "@/lib/content"
 import { ICON_MAP } from "@/lib/icons"
 import { ChevronRight } from "lucide-react"
@@ -22,7 +25,13 @@ export function CategoryStrip() {
   return (
     <section className="py-12 sm:py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
+        <motion.div
+          className="flex items-center justify-between mb-8"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
           <h2 className="text-2xl font-bold text-warm-text sm:text-3xl">Featured Top Category</h2>
           <Link
             href="/selection"
@@ -30,31 +39,42 @@ export function CategoryStrip() {
           >
             See All <ChevronRight className="w-4 h-4" />
           </Link>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
           {CATEGORIES.map((cat, i) => {
             const Icon = ICON_MAP[cat.icon]
             const palette = CARD_COLORS[i % CARD_COLORS.length]
             return (
-              <Link
+              <motion.div
                 key={cat.id}
-                href={`/selection#${cat.id}`}
-                className="group flex flex-col items-center gap-3 rounded-card p-4 sm:p-5 text-center transition-transform hover:scale-105"
-                style={{ backgroundColor: palette.bg }}
+                initial={{ opacity: 0, y: 40, scale: 0.92 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.05,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/60 flex items-center justify-center">
-                  {Icon && (
-                    <Icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: palette.color }} />
-                  )}
-                </div>
-                <span
-                  className="text-xs sm:text-sm font-semibold leading-tight"
-                  style={{ color: palette.color }}
+                <Link
+                  href={`/selection#${cat.id}`}
+                  className="group flex flex-col items-center gap-3 rounded-card p-4 sm:p-5 text-center transition-transform hover:scale-105"
+                  style={{ backgroundColor: palette.bg }}
                 >
-                  {cat.name}
-                </span>
-              </Link>
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/60 flex items-center justify-center">
+                    {Icon && (
+                      <Icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: palette.color }} />
+                    )}
+                  </div>
+                  <span
+                    className="text-xs sm:text-sm font-semibold leading-tight"
+                    style={{ color: palette.color }}
+                  >
+                    {cat.name}
+                  </span>
+                </Link>
+              </motion.div>
             )
           })}
         </div>

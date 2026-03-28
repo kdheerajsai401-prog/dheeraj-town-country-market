@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { motion } from "motion/react"
 import { SectionWrapper } from "@/components/ui/SectionWrapper"
 import { Badge } from "@/components/ui/Badge"
 import { LOCATIONS } from "@/lib/content"
@@ -8,24 +11,31 @@ export function LocationsPreview() {
   return (
     <SectionWrapper className="bg-warm-surface py-16 sm:py-24">
       <div className="flex flex-col gap-10">
-        {/* Heading */}
-        <div className="text-center">
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
           <p className="text-gold text-sm font-semibold tracking-widest uppercase mb-3">
             Find Us
           </p>
           <h2 className="text-3xl font-bold text-warm-text sm:text-4xl">
             Two locations in Mississauga
           </h2>
-        </div>
+        </motion.div>
 
-        {/* Location cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {LOCATIONS.map((loc) => (
-            <div
+          {LOCATIONS.map((loc, i) => (
+            <motion.div
               key={loc.id}
+              initial={{ opacity: 0, x: i === 0 ? -60 : 60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="bg-white rounded-card p-6 sm:p-8 flex flex-col gap-5 shadow-sm"
             >
-              {/* Header row */}
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold text-teal uppercase tracking-wider mb-1">
@@ -39,7 +49,6 @@ export function LocationsPreview() {
                 <Badge variant="green">Open 24/7</Badge>
               </div>
 
-              {/* Contact */}
               <div className="flex flex-col gap-3">
                 <a
                   href={loc.phoneHref}
@@ -52,7 +61,6 @@ export function LocationsPreview() {
                 </a>
               </div>
 
-              {/* Directions CTA */}
               <Link
                 href={loc.mapsLink}
                 target="_blank"
@@ -62,19 +70,24 @@ export function LocationsPreview() {
                 <MapPin className="w-4 h-4" />
                 Get Directions
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        {/* View all */}
-        <div className="text-center">
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <Link
             href="/locations"
             className="text-sm font-semibold text-warm-muted hover:text-warm-text underline underline-offset-4 transition-colors"
           >
             View maps &amp; more location info
           </Link>
-        </div>
+        </motion.div>
       </div>
     </SectionWrapper>
   )
