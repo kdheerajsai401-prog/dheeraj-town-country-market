@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useSearchParams } from "next/navigation"
 import { Search, X } from "lucide-react"
 import type { Category, Product } from "@/lib/types"
 import { CategoryCard } from "./CategoryCard"
@@ -11,7 +12,8 @@ type Props = {
 }
 
 export function SelectionSearch({ categories, products }: Props) {
-  const [query, setQuery] = useState("")
+  const searchParams = useSearchParams()
+  const [query, setQuery] = useState(searchParams.get("q") ?? "")
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim()

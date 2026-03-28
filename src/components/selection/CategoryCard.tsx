@@ -1,4 +1,5 @@
 import { ICON_MAP } from "@/lib/icons"
+import { slugify } from "@/lib/utils"
 import type { Category, Product } from "@/lib/types"
 import { ProductCard } from "./ProductCard"
 
@@ -11,7 +12,7 @@ export function CategoryCard({ category, products }: CategoryCardProps) {
   const Icon = ICON_MAP[category.icon]
 
   return (
-    <div id={category.id} className="flex flex-col gap-6 scroll-mt-24">
+    <div id={slugify(category.name)} className="flex flex-col gap-6 scroll-mt-24">
       {/* Category header */}
       <div className="flex items-center gap-4 pb-4 border-b border-warm-surface">
         <div className="w-10 h-10 rounded-full bg-warm-surface flex items-center justify-center flex-shrink-0">

@@ -2,11 +2,11 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Menu, X, Search, ShoppingBasket, Phone } from "lucide-react"
 import { CATEGORIES } from "@/lib/content"
 import { ICON_MAP } from "@/lib/icons"
-import { cn } from "@/lib/utils"
+import { cn, slugify } from "@/lib/utils"
 
 const TOP_NAV = [
   { label: "Home", href: "/" },
@@ -17,7 +17,17 @@ const TOP_NAV = [
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const [navSearch, setNavSearch] = useState("")
   const pathname = usePathname()
+  const router = useRouter()
+
+  function handleNavSearch(e: React.FormEvent) {
+    e.preventDefault()
+    const q = navSearch.trim()
+    router.push(q ? `/selection?q=${encodeURIComponent(q)}` : "/selection")
+    setNavSearch("")
+    setOpen(false)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -67,17 +77,22 @@ export function Header() {
             </nav>
 
             {/* Search bar — always visible on sm+ */}
-            <Link
-              href="/selection"
-              className="flex-1 max-w-sm mx-auto sm:flex hidden items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 hover:border-teal/50 hover:bg-white transition-all group shadow-sm"
-              aria-label="Search our selection"
+            <form
+              onSubmit={handleNavSearch}
+              className="flex-1 max-w-sm mx-auto sm:flex hidden items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-full px-4 py-2 hover:border-teal/50 hover:bg-white transition-all group shadow-sm focus-within:border-teal/50 focus-within:bg-white"
             >
               <Search className="w-3.5 h-3.5 text-warm-muted group-hover:text-teal transition-colors shrink-0" />
-              <span className="text-xs text-warm-muted flex-1">Search products...</span>
+              <input
+                type="text"
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+                placeholder="Search products..."
+                className="text-xs text-warm-text flex-1 bg-transparent outline-none placeholder:text-warm-muted"
+              />
               <span className="hidden lg:inline text-[10px] text-warm-muted/60 bg-gray-100 rounded px-1.5 py-0.5 font-mono">
                 ↵
               </span>
-            </Link>
+            </form>
 
             {/* Phone (desktop) */}
             <a
@@ -119,7 +134,7 @@ export function Header() {
               return (
                 <Link
                   key={cat.id}
-                  href={`/selection#${cat.id}`}
+                  href={`/selection#${slugify(cat.name)}`}
                   className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/15 transition-colors"
                 >
                   {Icon && <Icon className="w-3.5 h-3.5 flex-shrink-0" />}
@@ -140,14 +155,19 @@ export function Header() {
       >
         <nav className="flex flex-col px-4 py-3" aria-label="Mobile navigation">
           {/* Search on mobile */}
-          <Link
-            href="/selection"
-            className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-3 hover:border-teal/50 transition-colors"
-            onClick={() => setOpen(false)}
+          <form
+            onSubmit={handleNavSearch}
+            className="flex items-center gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-3 focus-within:border-teal/50 transition-colors"
           >
             <Search className="w-4 h-4 text-warm-muted shrink-0" />
-            <span className="text-sm text-warm-muted">Search products...</span>
-          </Link>
+            <input
+              type="text"
+              value={navSearch}
+              onChange={(e) => setNavSearch(e.target.value)}
+              placeholder="Search products..."
+              className="text-sm text-warm-text flex-1 bg-transparent outline-none placeholder:text-warm-muted"
+            />
+          </form>
 
           {TOP_NAV.map((item) => {
             const active = pathname === item.href

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { SectionWrapper } from "@/components/ui/SectionWrapper"
 import { SelectionSearch } from "@/components/selection/SelectionSearch"
 import { fetchUberEatsMenu } from "@/lib/uber-eats-menu"
@@ -32,7 +33,9 @@ export default async function SelectionPage() {
 
       {/* Searchable category list */}
       <SectionWrapper className="py-12 sm:py-16">
-        <SelectionSearch categories={categories} products={products} />
+        <Suspense>
+          <SelectionSearch categories={categories} products={products} />
+        </Suspense>
       </SectionWrapper>
     </main>
   )

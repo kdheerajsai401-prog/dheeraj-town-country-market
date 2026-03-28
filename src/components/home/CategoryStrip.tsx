@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "motion/react"
 import { CATEGORIES } from "@/lib/content"
 import { ICON_MAP } from "@/lib/icons"
+import { slugify } from "@/lib/utils"
 import { ChevronRight } from "lucide-react"
 
 const CARD_COLORS = [
@@ -58,7 +59,7 @@ export function CategoryStrip() {
                 }}
               >
                 <Link
-                  href={`/selection#${cat.id}`}
+                  href={`/selection#${slugify(cat.name)}`}
                   className="group flex flex-col items-center gap-3 rounded-card p-4 sm:p-5 text-center transition-transform hover:scale-105"
                   style={{ backgroundColor: palette.bg }}
                 >
