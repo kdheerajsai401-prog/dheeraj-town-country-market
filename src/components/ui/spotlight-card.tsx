@@ -10,6 +10,7 @@ interface GlowCardProps {
   width?: string | number
   height?: string | number
   customSize?: boolean
+  noBg?: boolean
 }
 
 const glowColorMap = {
@@ -34,6 +35,7 @@ const GlowCard: React.FC<GlowCardProps> = ({
   width,
   height,
   customSize = false,
+  noBg = false,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const innerRef = useRef<HTMLDivElement>(null)
@@ -70,7 +72,7 @@ const GlowCard: React.FC<GlowCardProps> = ({
       // Dark:  --glow-lightness=50 → after brightness(2)=100% white glow on dark, --glow-backdrop=#1c1b18
       '--lightness': 'var(--glow-lightness, 30)',
       '--saturation': '100',
-      '--bg-spot-opacity': '0.08',
+      '--bg-spot-opacity': noBg ? '0' : '0.08',
       '--backdrop': 'var(--glow-backdrop, hsl(0 0% 100%))',
       '--backup-border': 'var(--glow-border, hsl(0 0% 88%))',
       '--size': '300',
@@ -84,7 +86,7 @@ const GlowCard: React.FC<GlowCardProps> = ({
         calc(var(--y, 0) * 1px),
         hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 30) * 1%) / var(--bg-spot-opacity, 0.08)), transparent
       )`,
-      backgroundColor: 'var(--backdrop, transparent)',
+      ...(noBg ? {} : { backgroundColor: 'var(--backdrop, transparent)' }),
       backgroundSize: 'calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)))',
       backgroundPosition: '50% 50%',
       backgroundAttachment: 'fixed',

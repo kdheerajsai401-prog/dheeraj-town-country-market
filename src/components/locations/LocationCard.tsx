@@ -18,7 +18,7 @@ export function LocationCard({ location }: LocationCardProps) {
       <MapEmbed src={location.mapsEmbedSrc} title={`Map for ${location.name} location`} />
 
       {/* Info */}
-      <div className="flex flex-col gap-5 p-6 sm:p-8">
+      <div className="flex flex-col gap-5 p-6 sm:p-8 bg-warm-white">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold text-gold uppercase tracking-wider mb-1">
