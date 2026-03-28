@@ -1,5 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { Badge } from "@/components/ui/Badge"
+import { GlowCard } from "@/components/ui/spotlight-card"
 import { MapEmbed } from "./MapEmbed"
 import type { Location } from "@/lib/types"
 import { Phone, MapPin } from "lucide-react"
@@ -10,7 +13,7 @@ type LocationCardProps = {
 
 export function LocationCard({ location }: LocationCardProps) {
   return (
-    <article className="flex flex-col gap-0 bg-white rounded-card overflow-hidden shadow-sm border border-warm-surface/60">
+    <GlowCard customSize glowColor="green" className="flex flex-col gap-0 overflow-hidden shadow-sm p-0">
       {/* Map */}
       <MapEmbed src={location.mapsEmbedSrc} title={`Map for ${location.name} location`} />
 
@@ -54,6 +57,6 @@ export function LocationCard({ location }: LocationCardProps) {
           </Link>
         </div>
       </div>
-    </article>
+    </GlowCard>
   )
 }

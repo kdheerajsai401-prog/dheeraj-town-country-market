@@ -1,4 +1,7 @@
+"use client"
+
 import { Badge } from "@/components/ui/Badge"
+import { GlowCard } from "@/components/ui/spotlight-card"
 import type { Product } from "@/lib/types"
 
 type ProductCardProps = {
@@ -13,7 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const isOnSale = product.salePrice !== undefined && product.salePrice < (product.price ?? Infinity)
 
   return (
-    <div className="flex flex-col gap-3 bg-white rounded-card p-4 shadow-sm border border-warm-surface/60">
+    <GlowCard customSize glowColor="orange" className="flex flex-col gap-3 p-4 shadow-sm">
       {/* Image area */}
       <div className="relative w-full aspect-square rounded-lg bg-warm-surface overflow-hidden flex items-center justify-center">
         {product.image ? (
@@ -59,6 +62,6 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       )}
-    </div>
+    </GlowCard>
   )
 }

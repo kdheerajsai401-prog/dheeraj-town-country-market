@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "motion/react"
 import { ChevronRight } from "lucide-react"
 import { SAMPLE_PRODUCTS, CATEGORIES } from "@/lib/content"
+import { GlowCard } from "@/components/ui/spotlight-card"
 
 const FEATURED = SAMPLE_PRODUCTS.filter((p) => p.salePrice && p.image).slice(0, 8)
 
@@ -62,47 +63,49 @@ export function FeaturedItems() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
-                <Link
-                  href={`/selection#${product.categoryId}`}
-                  className="group flex flex-col bg-white rounded-card shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-warm-surface h-full"
-                >
-                  <div
-                    className="relative h-36 sm:h-40 overflow-hidden"
-                    style={{ backgroundColor: fallback }}
+                <GlowCard customSize glowColor="orange" className="overflow-hidden shadow-sm p-0 h-full">
+                  <Link
+                    href={`/selection#${product.categoryId}`}
+                    className="group flex flex-col h-full"
                   >
-                    {product.image && (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    )}
-                    {savings && (
-                      <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow">
-                        Save ${savings}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="p-3 flex flex-col gap-1 flex-1">
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-warm-muted">
-                      {cat?.name ?? ""}
-                    </span>
-                    <p className="text-sm font-semibold text-warm-text leading-tight group-hover:text-teal transition-colors">
-                      {product.name}
-                    </p>
-                    <div className="flex items-baseline gap-2 mt-auto pt-2">
-                      <span className="text-base font-bold text-teal">
-                        ${product.salePrice!.toFixed(2)}
-                      </span>
-                      {product.price != null && (
-                        <span className="text-xs text-warm-muted line-through">
-                          ${product.price.toFixed(2)}
+                    <div
+                      className="relative h-36 sm:h-40 overflow-hidden"
+                      style={{ backgroundColor: fallback }}
+                    >
+                      {product.image && (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )}
+                      {savings && (
+                        <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow">
+                          Save ${savings}
                         </span>
                       )}
                     </div>
-                  </div>
-                </Link>
+
+                    <div className="p-3 flex flex-col gap-1 flex-1">
+                      <span className="text-[10px] font-semibold uppercase tracking-widest text-warm-muted">
+                        {cat?.name ?? ""}
+                      </span>
+                      <p className="text-sm font-semibold text-warm-text leading-tight group-hover:text-teal transition-colors">
+                        {product.name}
+                      </p>
+                      <div className="flex items-baseline gap-2 mt-auto pt-2">
+                        <span className="text-base font-bold text-teal">
+                          ${product.salePrice!.toFixed(2)}
+                        </span>
+                        {product.price != null && (
+                          <span className="text-xs text-warm-muted line-through">
+                            ${product.price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </GlowCard>
               </motion.div>
             )
           })}
