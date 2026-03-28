@@ -7,34 +7,11 @@ import Link from 'next/link'
 import { ArrowDown, ShoppingBag } from 'lucide-react'
 
 const storeImages = [
-  {
-    src: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Fresh produce section — colourful fruits and vegetables on display',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Well-stocked grocery aisle',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=1000&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Home-made bakery items — fresh bread and pastries',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Vibrant fresh vegetables display',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Refrigerated dairy and beverages section',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1603726623520-8c1b7e9c3697?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Snacks and pantry essentials aisle',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80',
-    alt: 'Fresh bakery pancakes and treats',
-  },
+  { src: '/images/store/store-1.webp', alt: 'Town & Country Market — store' },
+  { src: '/images/store/store-2.webp', alt: 'Town & Country Market — store' },
+  { src: '/images/store/store-3.webp', alt: 'Town & Country Market — store' },
+  { src: '/images/store/store-4.webp', alt: 'Town & Country Market — store' },
+  { src: '/images/store/store-5.webp', alt: 'Town & Country Market — store' },
 ]
 
 export default function GalleryPage() {
