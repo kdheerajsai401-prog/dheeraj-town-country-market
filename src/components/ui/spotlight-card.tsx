@@ -41,6 +41,9 @@ const GlowCard: React.FC<GlowCardProps> = ({
   const innerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Skip pointer tracking on touch devices — prevents scroll jank on mobile
+    if (window.matchMedia('(pointer: coarse)').matches) return
+
     const syncPointer = (e: PointerEvent) => {
       const { clientX: x, clientY: y } = e
       if (cardRef.current) {

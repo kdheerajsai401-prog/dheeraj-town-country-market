@@ -63,7 +63,7 @@ export function CategoryStrip() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
-                <GlowCard customSize noBg glowColor="orange" className="p-0 gap-0 aspect-auto hover:scale-105 transition-transform duration-200">
+                <GlowCard customSize noBg glowColor="orange" className="p-0 gap-0 aspect-auto overflow-hidden hover:scale-105 transition-transform duration-200">
                   <Link
                     href={`/selection#${slugify(cat.name)}`}
                     className="group flex flex-col items-center gap-3 rounded-[12px] p-4 sm:p-5 text-center w-full h-full"

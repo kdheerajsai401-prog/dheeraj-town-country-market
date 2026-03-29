@@ -3,23 +3,32 @@
 import Link from "next/link"
 import { motion } from "motion/react"
 import { ChevronRight } from "lucide-react"
-import { SAMPLE_PRODUCTS, CATEGORIES } from "@/lib/content"
 import { GlowCard } from "@/components/ui/spotlight-card"
-
-const FEATURED = SAMPLE_PRODUCTS.filter((p) => p.salePrice && p.image).slice(0, 8)
+import type { Category, Product } from "@/lib/types"
 
 const FALLBACK_BG: Record<string, string> = {
-  dairy:       "#e3f2fd",
-  bakery:      "#fff3e0",
-  produce:     "#e0f2f1",
-  "beer-wine": "#e8eaf6",
-  "ice-cream": "#fce4ec",
-  grocery:     "#f9fbe7",
-  chocolate:   "#efebe9",
-  frozen:      "#e1f5fe",
+  "dairy-eggs":         "#e3f2fd",
+  "bakery":             "#fff3e0",
+  "fruits-vegetables":  "#e0f2f1",
+  "beer-wine":          "#e8eaf6",
+  "ice-cream":          "#fce4ec",
+  "pantry-groceries":   "#f9fbe7",
+  "sweets-chocolates":  "#efebe9",
+  "frozen-food":        "#e1f5fe",
+  "beverages":          "#e8f5e9",
+  "snacks":             "#fff8e1",
 }
 
-export function FeaturedItems() {
+type Props = {
+  products: Product[]
+  categories: Category[]
+}
+
+export function FeaturedItems({ products, categories }: Props) {
+  const featured = products.filter((p) => p.image).slice(0, 8)
+
+  if (featured.length === 0) return null
+
   return (
     <section className="py-12 sm:py-16 bg-warm-surface">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -31,8 +40,8 @@ export function FeaturedItems() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <div>
-            <p className="text-xs font-bold tracking-widest uppercase text-teal mb-1">On Sale Now</p>
-            <h2 className="text-2xl font-bold text-warm-text sm:text-3xl">Featured Items</h2>
+            <p className="text-xs font-bold tracking-widest uppercase text-teal mb-1">From the Store</p>
+            <h2 className="text-2xl font-bold text-warm-text sm:text-3xl">Popular Items</h2>
           </div>
           <Link
             href="/selection"
@@ -43,12 +52,8 @@ export function FeaturedItems() {
         </motion.div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {FEATURED.map((product, i) => {
-            const cat = CATEGORIES.find((c) => c.id === product.categoryId)
-            const savings =
-              product.salePrice != null && product.price != null
-                ? (product.price - product.salePrice).toFixed(2)
-                : null
+          {featured.map((product, i) => {
+            const cat = categories.find((c) => c.id === product.categoryId)
             const fallback = FALLBACK_BG[product.categoryId] ?? "#f5f5f5"
 
             return (
@@ -72,18 +77,11 @@ export function FeaturedItems() {
                       className="relative h-36 sm:h-40 overflow-hidden"
                       style={{ backgroundColor: fallback }}
                     >
-                      {product.image && (
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
-                      {savings && (
-                        <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow">
-                          Save ${savings}
-                        </span>
-                      )}
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
 
                     <div className="p-3 flex flex-col gap-1 flex-1">
@@ -93,16 +91,13 @@ export function FeaturedItems() {
                       <p className="text-sm font-semibold text-warm-text leading-tight group-hover:text-teal transition-colors">
                         {product.name}
                       </p>
-                      <div className="flex items-baseline gap-2 mt-auto pt-2">
-                        <span className="text-base font-bold text-teal">
-                          ${product.salePrice!.toFixed(2)}
-                        </span>
-                        {product.price != null && (
-                          <span className="text-xs text-warm-muted line-through">
+                      {product.price != null && (
+                        <div className="flex items-baseline gap-2 mt-auto pt-2">
+                          <span className="text-base font-bold text-teal">
                             ${product.price.toFixed(2)}
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </GlowCard>

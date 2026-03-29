@@ -95,14 +95,15 @@ export function Header() {
               </span>
             </form>
 
-            {/* Order Now button (desktop) */}
+            {/* Order Now button (sm+) */}
             <a
               href={SITE.uberEatsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden lg:flex items-center gap-2 shrink-0 px-4 py-2 text-[12px] font-bold text-white rounded-full bg-gradient-to-r from-teal to-[#0d9488] shadow-[0_2px_10px_rgba(20,184,166,0.4)] hover:shadow-[0_4px_22px_rgba(20,184,166,0.65)] hover:scale-105 transition-all duration-200 ease-out relative overflow-hidden group"
+              className="hidden sm:flex items-center gap-2 shrink-0 px-4 py-2 text-[12px] font-bold text-white rounded-full bg-gradient-to-r from-teal to-[#0d9488] shadow-[0_2px_10px_rgba(20,184,166,0.4)] hover:shadow-[0_4px_22px_rgba(20,184,166,0.65)] hover:scale-105 transition-all duration-200 ease-out relative overflow-hidden group"
             >
-              <span className="relative z-10">Order Now</span>
+              <span className="relative z-10 hidden lg:inline">Order Now</span>
+              <span className="relative z-10 lg:hidden">Order</span>
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out" />
             </a>
 
@@ -160,6 +161,18 @@ export function Header() {
         )}
       >
         <nav className="flex flex-col px-4 py-3" aria-label="Mobile navigation">
+          {/* Order Now — top of drawer */}
+          <a
+            href={SITE.uberEatsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-3 mb-3 text-sm font-bold text-white rounded-xl bg-gradient-to-r from-teal to-[#0d9488] shadow-[0_2px_10px_rgba(20,184,166,0.35)] relative overflow-hidden group"
+            onClick={() => setOpen(false)}
+          >
+            <span className="relative z-10">Order Now on Uber Eats</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out" />
+          </a>
+
           {/* Search on mobile */}
           <form
             onSubmit={handleNavSearch}
@@ -193,18 +206,6 @@ export function Header() {
               </Link>
             )
           })}
-
-          <div className="mt-3 pt-3 border-t border-warm-surface">
-            <a
-              href={SITE.uberEatsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3 text-sm font-bold text-white rounded-xl bg-gradient-to-r from-teal to-[#0d9488] shadow-[0_2px_10px_rgba(20,184,166,0.35)] relative overflow-hidden group"
-            >
-              <span className="relative z-10">Order Now on Uber Eats</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out" />
-            </a>
-          </div>
         </nav>
       </div>
     </header>
