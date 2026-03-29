@@ -7,7 +7,6 @@ import { ICON_MAP } from "@/lib/icons"
 import { slugify } from "@/lib/utils"
 import { ChevronRight } from "lucide-react"
 import { useTheme } from "@/components/ui/ThemeProvider"
-import { GlowCard } from "@/components/ui/spotlight-card"
 
 const CARD_COLORS = [
   { light: { bg: "#e0f2f1", color: "#00796b" }, dark: { bg: "#0d2420", color: "#4db6ac" } },
@@ -63,25 +62,23 @@ export function CategoryStrip() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
-                <GlowCard customSize noBg glowColor="orange" className="p-0 gap-0 aspect-auto overflow-hidden hover:scale-105 transition-transform duration-200">
-                  <Link
-                    href={`/selection#${slugify(cat.name)}`}
-                    className="group flex flex-col items-center gap-3 rounded-2xl p-4 sm:p-5 text-center w-full h-full"
-                    style={{ backgroundColor: colors.bg }}
+                <Link
+                  href={`/selection#${slugify(cat.name)}`}
+                  className="group flex flex-col items-center gap-3 rounded-2xl p-4 sm:p-5 text-center w-full transition-transform duration-200 hover:scale-105 border-2 border-transparent hover:border-white/20"
+                  style={{ backgroundColor: colors.bg }}
+                >
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 flex items-center justify-center">
+                    {Icon && (
+                      <Icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: colors.color }} />
+                    )}
+                  </div>
+                  <span
+                    className="text-xs sm:text-sm font-semibold leading-tight"
+                    style={{ color: colors.color }}
                   >
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 flex items-center justify-center">
-                      {Icon && (
-                        <Icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: colors.color }} />
-                      )}
-                    </div>
-                    <span
-                      className="text-xs sm:text-sm font-semibold leading-tight"
-                      style={{ color: colors.color }}
-                    >
-                      {cat.name}
-                    </span>
-                  </Link>
-                </GlowCard>
+                    {cat.name}
+                  </span>
+                </Link>
               </motion.div>
             )
           })}
