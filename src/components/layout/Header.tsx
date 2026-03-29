@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Menu, X, Search, ShoppingBasket } from "lucide-react"
@@ -21,6 +21,16 @@ export function Header() {
   const [navSearch, setNavSearch] = useState("")
   const pathname = usePathname()
   const router = useRouter()
+
+  // Live search — navigate to /selection as user types (300ms debounce)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (navSearch.trim()) {
+        router.push(`/selection?q=${encodeURIComponent(navSearch.trim())}`)
+      }
+    }, 300)
+    return () => clearTimeout(t)
+  }, [navSearch, router])
 
   function handleNavSearch(e: React.FormEvent) {
     e.preventDefault()
@@ -112,13 +122,13 @@ export function Header() {
 
             {/* Mobile: search icon + hamburger */}
             <div className="md:hidden flex items-center gap-1">
-              <Link
-                href="/selection"
+              <button
+                onClick={() => setOpen(true)}
                 className="flex items-center justify-center w-9 h-9 rounded-lg text-warm-muted hover:text-teal hover:bg-warm-surface/60 transition-colors"
                 aria-label="Search"
               >
-                <Search className="w-4.5 h-4.5 w-[18px] h-[18px]" />
-              </Link>
+                <Search className="w-[18px] h-[18px]" />
+              </button>
               <button
                 className="flex items-center justify-center w-9 h-9 rounded-lg text-warm-text hover:bg-warm-surface/60 transition-colors"
                 onClick={() => setOpen(!open)}

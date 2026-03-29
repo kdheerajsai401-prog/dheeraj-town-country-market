@@ -66,7 +66,7 @@ export function CategoryStrip() {
                 <GlowCard customSize noBg glowColor="orange" className="p-0 gap-0 aspect-auto overflow-hidden hover:scale-105 transition-transform duration-200">
                   <Link
                     href={`/selection#${slugify(cat.name)}`}
-                    className="group flex flex-col items-center gap-3 rounded-[12px] p-4 sm:p-5 text-center w-full h-full"
+                    className="group flex flex-col items-center gap-3 rounded-2xl p-4 sm:p-5 text-center w-full h-full"
                     style={{ backgroundColor: colors.bg }}
                   >
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 flex items-center justify-center">
