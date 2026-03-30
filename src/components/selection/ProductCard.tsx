@@ -13,10 +13,15 @@ function formatPrice(price: number) {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const isOnSale = product.salePrice !== undefined && product.salePrice < (product.price ?? Infinity)
+  const isUnavailable = product.unavailable === true
+  const isOnSale = !isUnavailable && product.salePrice !== undefined && product.salePrice < (product.price ?? Infinity)
 
   return (
-    <GlowCard customSize glowColor="orange" className="flex flex-col gap-3 p-4 shadow-sm">
+    <GlowCard
+      customSize
+      glowColor="orange"
+      className={`flex flex-col gap-3 p-4 shadow-sm${isUnavailable ? " opacity-60" : ""}`}
+    >
       {/* Image area */}
       <div className="relative w-full aspect-square rounded-lg bg-warm-surface overflow-hidden flex items-center justify-center">
         {product.image ? (
@@ -24,11 +29,16 @@ export function ProductCard({ product }: ProductCardProps) {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover${isUnavailable ? " grayscale" : ""}`}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className="w-10 h-10 rounded-full bg-warm-text/5" aria-hidden="true" />
+          </div>
+        )}
+        {isUnavailable && (
+          <div className="absolute top-2 left-2">
+            <Badge variant="unavailable">Unavailable</Badge>
           </div>
         )}
         {isOnSale && (
@@ -43,8 +53,8 @@ export function ProductCard({ product }: ProductCardProps) {
         {product.name}
       </p>
 
-      {/* Price */}
-      {product.price !== undefined && (
+      {/* Price — hidden for unavailable items to avoid misleading CTAs */}
+      {!isUnavailable && product.price !== undefined && (
         <div className="flex items-baseline gap-2 mt-auto">
           {isOnSale ? (
             <>

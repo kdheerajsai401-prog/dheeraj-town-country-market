@@ -4,10 +4,12 @@ import { FeaturedItems } from "@/components/home/FeaturedItems"
 import { LocationsPreview } from "@/components/home/LocationsPreview"
 import { CustomerReviews } from "@/components/home/CustomerReviews"
 import { UberEatsBanner } from "@/components/home/UberEatsBanner"
-import { fetchUberEatsMenu } from "@/lib/uber-eats-menu"
+import { getMenu } from "@/lib/uber-eats-menu"
+
+export const revalidate = 86400
 
 export default async function HomePage() {
-  const { products, categories } = await fetchUberEatsMenu()
+  const { products, categories } = await getMenu()
 
   return (
     <main>

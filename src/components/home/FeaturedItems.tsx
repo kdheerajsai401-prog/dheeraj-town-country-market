@@ -25,7 +25,7 @@ type Props = {
 }
 
 export function FeaturedItems({ products, categories }: Props) {
-  const featured = products.filter((p) => p.image).slice(0, 8)
+  const featured = products.filter((p) => p.image && !p.unavailable).slice(0, 8)
 
   if (featured.length === 0) return null
 

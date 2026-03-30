@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 
 type BadgeProps = {
-  variant?: "default" | "dark" | "green" | "sale" | "outline"
+  variant?: "default" | "dark" | "green" | "sale" | "outline" | "unavailable"
   className?: string
   children: React.ReactNode
 }
@@ -13,6 +13,7 @@ export function Badge({ variant = "default", className, children }: BadgeProps) 
     green: "bg-leaf/10 text-leaf",
     sale: "bg-sale text-white",
     outline: "border border-warm-text/20 text-warm-muted",
+    unavailable: "bg-warm-text/10 text-warm-muted",
   }
 
   return (

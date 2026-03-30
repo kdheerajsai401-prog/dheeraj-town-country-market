@@ -1,5 +1,5 @@
+import { unstable_cache } from "next/cache"
 import type { Category, Product } from "./types"
-import { CATEGORIES, SAMPLE_PRODUCTS } from "./content"
 
 const STORE_UUID = "0e9689b2-344c-504f-9428-c7c52cd56a8f"
 const API_URL = "https://www.ubereats.com/api/getStoreV1"
@@ -22,6 +22,12 @@ type UberEatsCatalogSection = {
     }
   }
 }
+
+// Promotional section names whose products should be re-assigned to their
+// "real" section if that section also appears in the API response.
+// Dedup rule: if a product's first-seen category is promotional and a later
+// occurrence is from a non-promotional section, we upgrade the category.
+const PROMOTIONAL_SECTION_NAMES = new Set(["best sellers", "trending products"])
 
 // Layer 1: exact product-name overrides — partial, case-insensitive match → target section name
 const PRODUCT_OVERRIDES: Record<string, string> = {
@@ -288,7 +294,7 @@ async function fetchPage(offset?: number): Promise<{
   return { sections, nextOffset }
 }
 
-export async function fetchUberEatsMenu(): Promise<{ categories: Category[]; products: Product[] }> {
+async function fetchUberEatsMenu(): Promise<{ categories: Category[]; products: Product[] }> {
   try {
     const allSections: UberEatsCatalogSection[] = []
 
@@ -304,37 +310,94 @@ export async function fetchUberEatsMenu(): Promise<{ categories: Category[]; pro
       nextOffset = page.nextOffset
     }
 
-    const categories: Category[] = []
-    const products: Product[] = []
+    // Category dedup: keyed by catalogSectionUUID so paginated duplicates are merged.
+    const categoryMap = new Map<string, Category>()
+    // Product dedup: keyed by item UUID so products shared across sections appear once.
+    // Dedup rule for categoryId: if the existing assignment is from a promotional section
+    // (e.g. "Best sellers") and the current occurrence is from a non-promotional section,
+    // upgrade to the non-promotional category. Otherwise keep first-seen.
+    // Dedup rule for availability: mark available if ANY occurrence is available.
+    const productMap = new Map<string, Product>()
 
     for (const sec of allSections) {
       const sip = sec.payload.standardItemsPayload
       if (!sip || sip.catalogItems.length === 0) continue
 
-      const category: Category = {
-        id: sec.catalogSectionUUID,
-        name: sip.title.text,
-        icon: SECTION_ICON[sip.title.text] ?? "ShoppingBasket",
-        description: "",
+      // Category dedup: only register a category once per UUID
+      if (!categoryMap.has(sec.catalogSectionUUID)) {
+        categoryMap.set(sec.catalogSectionUUID, {
+          id: sec.catalogSectionUUID,
+          name: sip.title.text,
+          icon: SECTION_ICON[sip.title.text] ?? "ShoppingBasket",
+          description: "",
+        })
       }
-      categories.push(category)
+      const category = categoryMap.get(sec.catalogSectionUUID)!
 
       for (const item of sip.catalogItems) {
-        if (!item.isAvailable || item.isSoldOut) continue
-        products.push({
-          id: item.uuid,
-          categoryId: category.id,
-          name: item.title,
-          price: item.price / 100,
-          image: item.imageUrl,
-        })
+        const isUnavailable = !item.isAvailable || item.isSoldOut
+
+        if (productMap.has(item.uuid)) {
+          const existing = productMap.get(item.uuid)!
+
+          // Availability: if any occurrence is available, mark as available
+          if (!isUnavailable) {
+            existing.unavailable = false
+          }
+
+          // Category: upgrade from promotional to specific when possible
+          const existingCat = categoryMap.get(existing.categoryId)
+          const existingIsPromotional =
+            existingCat !== undefined &&
+            PROMOTIONAL_SECTION_NAMES.has(existingCat.name.toLowerCase())
+          const currentIsPromotional = PROMOTIONAL_SECTION_NAMES.has(
+            category.name.toLowerCase()
+          )
+          if (existingIsPromotional && !currentIsPromotional) {
+            existing.categoryId = category.id
+          }
+        } else {
+          productMap.set(item.uuid, {
+            id: item.uuid,
+            categoryId: category.id,
+            name: item.title,
+            price: item.price / 100,
+            image: item.imageUrl,
+            ...(isUnavailable ? { unavailable: true } : {}),
+          })
+        }
       }
     }
 
+    const categories = Array.from(categoryMap.values())
+    const products = Array.from(productMap.values())
+
     reclassifyProducts(categories, products)
+
+    if (products.length < 50) {
+      throw new Error(
+        `[uber-eats-menu] Suspiciously low product count: ${products.length}. Possible API change or empty response.`
+      )
+    }
+
     return { categories, products }
   } catch (err) {
-    console.warn("[uber-eats-menu] Fetch failed, using static fallback:", err)
-    return { categories: CATEGORIES, products: SAMPLE_PRODUCTS }
+    throw new Error(`[uber-eats-menu] Failed to fetch menu: ${err}`)
   }
 }
+
+// One shared fetch result per build/revalidation cycle.
+// Both home (/) and /selection call getMenu() — they hit the same cache key,
+// so the Uber Eats API is called exactly once per 24 h cycle regardless of
+// which page revalidates first.
+// unstable_cache is deprecated in Next.js 16 in favour of "use cache", but
+// "use cache" requires cacheComponents: true and its runtime in-memory store
+// does not persist across serverless invocations, making it unsuitable for
+// cross-page deduplication on Vercel without a remote cache backend.
+// unstable_cache hooks into Vercel's incremental cache (Data Cache) which
+// DOES persist across invocations and is the correct tool here.
+export const getMenu = unstable_cache(
+  fetchUberEatsMenu,
+  ["uber-eats-menu"],
+  { revalidate: 86400 }
+)

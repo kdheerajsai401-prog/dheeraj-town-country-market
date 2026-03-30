@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { SectionWrapper } from "@/components/ui/SectionWrapper"
 import { SelectionSearch } from "@/components/selection/SelectionSearch"
-import { fetchUberEatsMenu } from "@/lib/uber-eats-menu"
+import { getMenu } from "@/lib/uber-eats-menu"
 
 export const revalidate = 86400
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 }
 
 export default async function SelectionPage() {
-  const { categories, products } = await fetchUberEatsMenu()
+  const { categories, products } = await getMenu()
 
   return (
     <main>
