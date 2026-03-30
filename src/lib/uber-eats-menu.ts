@@ -279,9 +279,11 @@ async function fetchPage(offset?: number): Promise<{
   if (json.status !== "success") throw new Error(json.data?.message ?? "API error")
 
   const csm = json.data.catalogSectionsMap as Record<string, UberEatsCatalogSection[]>
-  const sections: UberEatsCatalogSection[] = Object.values(csm)[0] ?? []
+  const sections: UberEatsCatalogSection[] = Object.values(csm).flat()
   const paging = json.data.catalogSectionPagingInfo ?? {}
-  const nextOffset = sections.length > 0 && paging.offset ? (paging.offset as number) : null
+  const nextOffset = sections.length > 0 && paging.offset != null && paging.offset !== 0
+    ? (paging.offset as number)
+    : null
 
   return { sections, nextOffset }
 }
