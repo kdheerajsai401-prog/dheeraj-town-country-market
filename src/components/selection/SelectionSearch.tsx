@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
-import { Search, X } from "lucide-react"
+import { Search, X, ChevronUp } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
 import type { Category, Product } from "@/lib/types"
 import { CategoryCard } from "./CategoryCard"
 import { slugify } from "@/lib/utils"
@@ -16,7 +17,14 @@ export function SelectionSearch({ categories, products }: Props) {
   const searchParams = useSearchParams()
   const [query, setQuery] = useState(searchParams.get("q") ?? "")
   const [activeId, setActiveId] = useState<string>("")
+  const [showTop, setShowTop] = useState(false)
   const pillsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 400)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim()
@@ -29,16 +37,10 @@ export function SelectionSearch({ categories, products }: Props) {
       .map((cat) => ({
         cat,
         products: products.filter(
-          (p) =>
-            p.categoryId === cat.id &&
-            (p.name.toLowerCase().includes(q) || cat.name.toLowerCase().includes(q))
+          (p) => p.categoryId === cat.id && p.name.toLowerCase().includes(q)
         ),
       }))
-      .filter(({ cat, products: ps }) =>
-        cat.name.toLowerCase().includes(q) ||
-        cat.description?.toLowerCase().includes(q) ||
-        ps.length > 0
-      )
+      .filter(({ products: ps }) => ps.length > 0)
   }, [query, categories, products])
 
   // Track which category section is in view
@@ -138,6 +140,23 @@ export function SelectionSearch({ categories, products }: Props) {
           <CategoryCard key={cat.id} category={cat} products={ps} />
         ))}
       </div>
+
+      {/* Scroll to top */}
+      <AnimatePresence>
+        {showTop && !query && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-6 right-5 z-40 w-10 h-10 rounded-full bg-warm-surface/90 backdrop-blur border border-warm-surface shadow-lg flex items-center justify-center text-warm-muted hover:text-gold hover:border-gold transition-colors"
+            aria-label="Back to top"
+          >
+            <ChevronUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </>
   )
 }

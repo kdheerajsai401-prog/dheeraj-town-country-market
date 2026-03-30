@@ -41,7 +41,6 @@ export function Header() {
   }
 
   return (
-    <>
     <header className="sticky top-0 z-50 w-full">
       {/* ── Row 1: Top bar ── */}
       <div className="bg-warm-white border-b border-warm-surface shadow-sm">
@@ -220,16 +219,5 @@ export function Header() {
         </nav>
       </div>
     </header>
-
-    {/* ── Floating Order Now — mobile only ── */}
-    <a
-      href={SITE.uberEatsUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="md:hidden fixed bottom-6 right-4 z-50 flex items-center gap-2 px-5 py-3 text-[13px] font-bold text-white rounded-full bg-gradient-to-r from-teal to-[#0d9488] shadow-[0_4px_20px_rgba(20,184,166,0.55)] hover:shadow-[0_6px_28px_rgba(20,184,166,0.75)] active:scale-95 transition-all duration-200 relative overflow-hidden"
-    >
-      <span className="relative z-10">🛒 Order Now</span>
-    </a>
-  </>
   )
 }
