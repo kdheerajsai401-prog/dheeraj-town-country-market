@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Menu, X, Search, ShoppingBasket } from "lucide-react"
@@ -21,16 +21,6 @@ export function Header() {
   const [navSearch, setNavSearch] = useState("")
   const pathname = usePathname()
   const router = useRouter()
-
-  // Live search — navigate to /selection as user types (300ms debounce)
-  useEffect(() => {
-    const t = setTimeout(() => {
-      if (navSearch.trim()) {
-        router.push(`/selection?q=${encodeURIComponent(navSearch.trim())}`)
-      }
-    }, 300)
-    return () => clearTimeout(t)
-  }, [navSearch, router])
 
   function handleNavSearch(e: React.FormEvent) {
     e.preventDefault()

@@ -16,6 +16,11 @@ type Props = {
 export function SelectionSearch({ categories, products }: Props) {
   const searchParams = useSearchParams()
   const [query, setQuery] = useState(searchParams.get("q") ?? "")
+
+  // Keep query in sync when URL changes (e.g. nav bar submit or category pill click)
+  useEffect(() => {
+    setQuery(searchParams.get("q") ?? "")
+  }, [searchParams])
   const [activeId, setActiveId] = useState<string>("")
   const [showTop, setShowTop] = useState(false)
   const pillsRef = useRef<HTMLDivElement>(null)
@@ -111,7 +116,7 @@ export function SelectionSearch({ categories, products }: Props) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search products or categories..."
-          className="w-full pl-11 pr-10 py-3 rounded-xl border border-warm-text/15 bg-white text-warm-text text-sm placeholder:text-warm-muted focus:outline-none focus:ring-2 focus:ring-teal/40 focus:border-teal transition"
+          className="w-full pl-11 pr-10 py-3 rounded-xl border border-warm-text/15 bg-warm-white text-warm-text text-sm placeholder:text-warm-muted focus:outline-none focus:ring-2 focus:ring-teal/40 focus:border-teal transition"
           aria-label="Search products"
         />
         {query && (
