@@ -15,12 +15,16 @@ type Props = {
 
 export function SelectionSearch({ categories, products }: Props) {
   const searchParams = useSearchParams()
-  const [query, setQuery] = useState(searchParams.get("q") ?? "")
+  const urlQuery = searchParams.get("q") ?? ""
 
-  // Keep query in sync when URL changes (e.g. nav bar submit or category pill click)
-  useEffect(() => {
-    setQuery(searchParams.get("q") ?? "")
-  }, [searchParams])
+  // Derived-state-during-render: reset query when URL changes (e.g. header search navigate)
+  // This avoids setState inside a useEffect body (react-hooks/set-state-in-effect).
+  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery)
+  const [query, setQuery] = useState(urlQuery)
+  if (prevUrlQuery !== urlQuery) {
+    setPrevUrlQuery(urlQuery)
+    setQuery(urlQuery)
+  }
   const [activeId, setActiveId] = useState<string>("")
   const [showTop, setShowTop] = useState(false)
   const pillsRef = useRef<HTMLDivElement>(null)

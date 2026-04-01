@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Town & Country — Quick Reference Card</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f2922;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    .top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e6f7f5;
+      color: #0d9488;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0d9488;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1c1a17;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    h1 span { color: #0d9488; }
+
+    .subtitle {
+      font-size: 14px;
+      color: #78716c;
+      margin-bottom: 28px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #f0ede8;
+      margin: 20px 0;
+    }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #a8a29e;
+      margin-bottom: 12px;
+    }
+
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f5f4f1;
+    }
+
+    .item:last-child { border-bottom: none; }
+
+    .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .item-text { flex: 1; }
+
+    .item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1c1a17;
+      margin-bottom: 2px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: #78716c;
+      line-height: 1.5;
+    }
+
+    .item-desc strong {
+      color: #0d9488;
+      font-weight: 600;
+    }
+
+    .highlight-box {
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box .hl-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 4px;
+    }
+
+    .highlight-box .hl-text {
+      font-size: 13px;
+      color: #166534;
+      line-height: 1.5;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #f0ede8;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-url {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #0d9488;
+      background: #e6f7f5;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .footer-label {
+      font-size: 11px;
+      color: #a8a29e;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <div class="top-badge">
+      <div class="dot"></div>
+      Live right now
+    </div>
+
+    <h1>Town &amp; Country Market<br /><span>— Your website, explained</span></h1>
+    <p class="subtitle">Everything it does, in plain English</p>
+
+    <div class="divider"></div>
+
+    <p class="section-title">What happens automatically — you do nothing</p>
+
+    <div class="item">
+      <div class="icon" style="background:#e6f7f5;">🔄</div>
+      <div class="item-text">
+        <div class="item-title">Prices update on their own</div>
+        <div class="item-desc">Change a price on Uber Eats today — <strong>it updates on the website overnight.</strong> No one has to touch it.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#fff3e0;">➕</div>
+      <div class="item-text">
+        <div class="item-title">New products appear automatically</div>
+        <div class="item-desc">Add a new item to your Uber Eats store — <strong>it shows up on the website within 24 hours.</strong></div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#fce4ec;">🗑️</div>
+      <div class="item-text">
+        <div class="item-title">Removed products disappear too</div>
+        <div class="item-desc">Stop selling something on Uber Eats — <strong>it's gone from the website the next day.</strong></div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#e8eaf6;">📦</div>
+      <div class="item-text">
+        <div class="item-title">All 495+ products, always current</div>
+        <div class="item-desc">Across all 33 categories. Customers can search by name and find anything in seconds.</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="hl-title">✅ You never have to log in or update the website.</div>
+      <div class="hl-text">It reads your Uber Eats store every day and stays in sync on its own. Set it and forget it.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="section-title">What else it does</p>
+
+    <div class="item">
+      <div class="icon" style="background:#e6f7f5;">📱</div>
+      <div class="item-text">
+        <div class="item-title">Works perfectly on any phone</div>
+        <div class="item-desc">Most customers will find you on their phone. This site is built for that.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#fff3e0;">🗺️</div>
+      <div class="item-text">
+        <div class="item-title">Both locations on a live map</div>
+        <div class="item-desc">One tap to get directions. Phone number is right there too.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#fef9ee;">🛒</div>
+      <div class="item-text">
+        <div class="item-title">"Order Now" button on every page</div>
+        <div class="item-desc">Takes customers straight to your Uber Eats store — no searching, one tap.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#fce4ec;">⭐</div>
+      <div class="item-text">
+        <div class="item-title">Customer reviews on the home page</div>
+        <div class="item-desc">Real 5-star reviews scroll automatically. New customers see trust before they visit.</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="icon" style="background:#e8eaf6;">🖼️</div>
+      <div class="item-text">
+        <div class="item-title">Photo gallery with a scroll effect</div>
+        <div class="item-desc">Photos of your store zoom in as you scroll. Shows people what to expect before walking in.</div>
+      </div>
+    </div>
+
+    <div class="footer-row">
+      <span class="footer-label">Live at</span>
+      <span class="footer-url">dheeraj-town-country-market.vercel.app</span>
+      <span class="footer-label">Town &amp; Country Market · 2026</span>
+    </div>
+
+  </div>
+</body>
+</html>

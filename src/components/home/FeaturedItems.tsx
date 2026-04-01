@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
 import { ChevronRight } from "lucide-react"
@@ -77,10 +78,12 @@ export function FeaturedItems({ products, categories }: Props) {
                       className="relative h-36 sm:h-40 overflow-hidden"
                       style={{ backgroundColor: fallback }}
                     >
-                      <img
-                        src={product.image}
+                      <Image
+                        src={product.image!}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        unoptimized
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
 

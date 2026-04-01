@@ -1,3 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
+// scroll-driven zoom parallax — img elements must be unsized/unfilled for the
+// scale transforms to work correctly; Next <Image> sizing interferes.
 'use client'
 
 import { useScroll, useTransform, motion } from 'motion/react'

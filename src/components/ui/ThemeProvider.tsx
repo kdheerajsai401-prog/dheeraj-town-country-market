@@ -20,6 +20,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem("theme") as Theme | null
     const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
     const initial = saved ?? preferred
+    // Intentional: hydration-safe init. Server must render "light" to avoid mismatch;
+    // sync to localStorage/prefers-color-scheme happens here on first client mount only.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(initial)
     document.documentElement.classList.toggle("dark", initial === "dark")
   }, [])

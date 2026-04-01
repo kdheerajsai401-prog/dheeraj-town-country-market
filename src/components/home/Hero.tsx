@@ -1,3 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
+// motion.img is used intentionally — Framer Motion's scroll-driven transforms
+// require direct img elements; Next <Image> wraps in a span that fights the transforms.
 "use client"
 
 import { UberEatsButton } from "@/components/ui/UberEatsButton"

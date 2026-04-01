@@ -1,3 +1,12 @@
+// FAILURE POLICY (explicit):
+// If the Uber Eats API is unreachable, returns non-success, or yields fewer than
+// 50 products, fetchUberEatsMenu throws. getMenu (unstable_cache) propagates the
+// error to the page's generateStaticParams / page render, which causes Next.js to
+// FAIL the build/revalidation visibly. Vercel keeps the last successful deployment
+// live until a clean revalidation succeeds.
+//
+// This is intentional — serving yesterday's menu data is safe; serving an empty or
+// partially-populated menu is not. There is no SAMPLE_PRODUCTS fallback.
 import { unstable_cache } from "next/cache"
 import type { Category, Product } from "./types"
 
