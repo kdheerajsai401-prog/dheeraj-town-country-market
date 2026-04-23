@@ -1,17 +1,24 @@
 // FAILURE POLICY (explicit):
-// If the Uber Eats API is unreachable, returns non-success, or yields fewer than
-// 50 products, fetchUberEatsMenu throws. getMenu (unstable_cache) propagates the
-// error to the page's generateStaticParams / page render, which causes Next.js to
-// FAIL the build/revalidation visibly. Vercel keeps the last successful deployment
-// live until a clean revalidation succeeds.
-//
-// This is intentional — serving yesterday's menu data is safe; serving an empty or
+// PRIMARY (V1 — getStoreV1): If unreachable, returns non-success, or yields fewer
+// than 50 products, fetchUberEatsMenu throws. getMenu (unstable_cache) propagates
+// the error to the page render, which causes Next.js to FAIL the build/revalidation
+// visibly. Vercel keeps the last successful deployment live until a clean
+// revalidation succeeds. Serving yesterday's menu is safe; serving an empty or
 // partially-populated menu is not. There is no SAMPLE_PRODUCTS fallback.
+//
+// SECONDARY (V2 — getCatalogPresentationV2): Best-effort per-section expansion that
+// captures items hidden inside subsection drilldowns that V1 doesn't surface on the
+// storefront landing. Per-section V2 failures (HTTP errors, parse errors, structural
+// surprises) are silently swallowed — V1 results still ship. This is intentional:
+// V2 is opportunistic uplift, not a reliability dependency. The < 50 products check
+// still fires on the merged total, so if BOTH V1 and V2 collapse, the build fails.
 import { unstable_cache } from "next/cache"
 import type { Category, Product } from "./types"
 
 const STORE_UUID = "0e9689b2-344c-504f-9428-c7c52cd56a8f"
 const API_URL = "https://www.ubereats.com/api/getStoreV1"
+const CATALOG_V2_URL = "https://www.ubereats.com/_p/api/getCatalogPresentationV2"
+const V2_CONCURRENCY = 5
 
 type UberEatsItem = {
   uuid: string
@@ -141,6 +148,109 @@ async function fetchPage(offset?: number): Promise<{
   return { sections, nextOffset }
 }
 
+// ── V2 SECONDARY EXPANSION ──────────────────────────────────────────────────
+// getCatalogPresentationV2 returns the full per-section item list (including
+// items only reachable via subsection drilldowns). V1 only returns what shows
+// on the storefront landing. We call V2 once per section discovered by V1.
+
+function extractItemsFromV2Response(json: unknown): UberEatsItem[] {
+  // Defensive walker. The V2 response shape is undocumented and may vary by
+  // section type — items typically live inside catalogItems arrays nested
+  // under standardItemsPayload, sometimes wrapped inside subsection groups.
+  // We recursively traverse anything that looks plausible and validate each
+  // candidate. Any structural surprise → return [] and let V1 ship.
+  const items: UberEatsItem[] = []
+  const seenInResponse = new Set<string>()
+
+  function isPlausibleItem(x: unknown): x is UberEatsItem {
+    if (!x || typeof x !== "object") return false
+    const o = x as Record<string, unknown>
+    return (
+      typeof o.uuid === "string" &&
+      typeof o.title === "string" &&
+      typeof o.price === "number"
+    )
+  }
+
+  function walk(node: unknown): void {
+    if (!node || typeof node !== "object") return
+    if (Array.isArray(node)) {
+      for (const child of node) walk(child)
+      return
+    }
+    const obj = node as Record<string, unknown>
+    // Direct catalogItems array
+    if (Array.isArray(obj.catalogItems)) {
+      for (const candidate of obj.catalogItems) {
+        if (isPlausibleItem(candidate) && !seenInResponse.has(candidate.uuid)) {
+          seenInResponse.add(candidate.uuid)
+          items.push({
+            uuid: candidate.uuid,
+            title: candidate.title,
+            price: candidate.price,
+            imageUrl: candidate.imageUrl,
+            isSoldOut: candidate.isSoldOut ?? false,
+            isAvailable: candidate.isAvailable ?? true,
+          })
+        }
+      }
+    }
+    // Recurse into all object/array children
+    for (const value of Object.values(obj)) {
+      if (value && typeof value === "object") walk(value)
+    }
+  }
+
+  try {
+    walk(json)
+  } catch {
+    return []
+  }
+  return items
+}
+
+async function fetchSectionDetailsV2(sectionUuid: string): Promise<UberEatsItem[]> {
+  // Two-attempt strategy: try with sectionTypes filter first, retry without
+  // if the first attempt yields zero items. Some sections require the filter,
+  // others return nothing when it's present (per reverse-engineering notes).
+  for (const includeSectionTypes of [true, false]) {
+    const body: Record<string, unknown> = {
+      sortAndFilters: null,
+      storeFilters: {
+        storeUuid: STORE_UUID,
+        sectionUuids: [sectionUuid],
+        subsectionUuids: null,
+      },
+    }
+    if (includeSectionTypes) {
+      body.sectionTypes = ["COLLECTION"]
+    }
+
+    try {
+      const res = await fetch(CATALOG_V2_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "x-csrf-token": "x",
+        },
+        body: JSON.stringify(body),
+        next: { revalidate: 86400 },
+      })
+      if (!res.ok) continue
+      const json = await res.json()
+      if (json?.status !== "success") continue
+
+      const items = extractItemsFromV2Response(json)
+      if (items.length > 0) return items
+    } catch {
+      continue
+    }
+  }
+  return []
+}
+
 async function fetchUberEatsMenu(): Promise<{ categories: Category[]; products: Product[] }> {
   try {
     const allSections: UberEatsCatalogSection[] = []
@@ -214,6 +324,51 @@ async function fetchUberEatsMenu(): Promise<{ categories: Category[]; products: 
           })
         }
       }
+    }
+
+    // ── V2 expansion (best-effort) ────────────────────────────────────────
+    // V1 only returns items shown on the storefront landing page. V2 fetches
+    // the full per-section item list including subsection drilldowns.
+    // Failures here NEVER break the build — V1 results still ship.
+    const sectionUuids = Array.from(categoryMap.keys())
+    const v2Stats = { sectionsZero: 0, sectionsErrored: 0, itemsAdded: 0 }
+
+    for (let i = 0; i < sectionUuids.length; i += V2_CONCURRENCY) {
+      const batch = sectionUuids.slice(i, i + V2_CONCURRENCY)
+      const results = await Promise.all(
+        batch.map(async (uuid) => {
+          try {
+            const items = await fetchSectionDetailsV2(uuid)
+            return { uuid, items, errored: false }
+          } catch {
+            return { uuid, items: [] as UberEatsItem[], errored: true }
+          }
+        })
+      )
+      for (const { uuid, items, errored } of results) {
+        if (errored) v2Stats.sectionsErrored++
+        else if (items.length === 0) v2Stats.sectionsZero++
+
+        const category = categoryMap.get(uuid)!
+        for (const item of items) {
+          if (!productMap.has(item.uuid)) {
+            const isUnavailable = !item.isAvailable || item.isSoldOut
+            productMap.set(item.uuid, {
+              id: item.uuid,
+              categoryId: category.id,
+              name: item.title,
+              price: item.price / 100,
+              image: item.imageUrl,
+              ...(isUnavailable ? { unavailable: true } : {}),
+            })
+            v2Stats.itemsAdded++
+          }
+        }
+      }
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[uber-eats-menu V2 expansion]", v2Stats)
     }
 
     const categories = Array.from(categoryMap.values())

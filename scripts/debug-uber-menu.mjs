@@ -15,6 +15,8 @@
 
 const STORE_UUID = "0e9689b2-344c-504f-9428-c7c52cd56a8f"
 const API_URL = "https://www.ubereats.com/api/getStoreV1"
+const CATALOG_V2_URL = "https://www.ubereats.com/_p/api/getCatalogPresentationV2"
+const V2_CONCURRENCY = 5
 
 // Search terms from CLI args, or default
 const rawTerms = process.argv[2] ?? "natrel,natural"
@@ -69,6 +71,86 @@ async function fetchPage(offset) {
   return { sections, paging, raw: json }
 }
 
+// ─── V2 helpers (mirror uber-eats-menu.ts) ──────────────────────────────────
+
+function extractItemsFromV2Response(json) {
+  const items = []
+  const seen = new Set()
+  function isPlausibleItem(x) {
+    return (
+      x &&
+      typeof x === "object" &&
+      typeof x.uuid === "string" &&
+      typeof x.title === "string" &&
+      typeof x.price === "number"
+    )
+  }
+  function walk(node) {
+    if (!node || typeof node !== "object") return
+    if (Array.isArray(node)) {
+      for (const c of node) walk(c)
+      return
+    }
+    if (Array.isArray(node.catalogItems)) {
+      for (const cand of node.catalogItems) {
+        if (isPlausibleItem(cand) && !seen.has(cand.uuid)) {
+          seen.add(cand.uuid)
+          items.push(cand)
+        }
+      }
+    }
+    for (const v of Object.values(node)) {
+      if (v && typeof v === "object") walk(v)
+    }
+  }
+  try { walk(json) } catch { return [] }
+  return items
+}
+
+async function fetchSectionV2(sectionUuid) {
+  for (const includeSectionTypes of [true, false]) {
+    const body = {
+      sortAndFilters: null,
+      storeFilters: {
+        storeUuid: STORE_UUID,
+        sectionUuids: [sectionUuid],
+        subsectionUuids: null,
+      },
+    }
+    if (includeSectionTypes) body.sectionTypes = ["COLLECTION"]
+
+    try {
+      const res = await fetch(CATALOG_V2_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+          "x-csrf-token": "x",
+        },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) continue
+      const json = await res.json()
+      if (json?.status !== "success") continue
+      const items = extractItemsFromV2Response(json)
+      if (items.length > 0) return { items, errored: false }
+    } catch {
+      continue
+    }
+  }
+  return { items: [], errored: false }   // empty but not errored
+}
+
+async function fetchSectionV2Safe(sectionUuid) {
+  try {
+    return await fetchSectionV2(sectionUuid)
+  } catch {
+    return { items: [], errored: true }
+  }
+}
+
 // ─── main ────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -79,6 +161,10 @@ async function main() {
   console.log("═".repeat(60))
 
   const allMatches = []   // { pageNum, offset, sectionName, sectionUUID, item }
+  // Track V1 per-section item UUIDs for V2 comparison later
+  const v1SectionItems = new Map()   // sectionUUID → Set<itemUuid>
+  const v1SectionNames = new Map()   // sectionUUID → section name
+  const v1AllItemUuids = new Set()
   let pageNum = 0
   let nextOffset = undefined  // undefined = initial request (no offset param)
   let keepGoing = true
@@ -120,8 +206,17 @@ async function main() {
       const sectionName = sip.title?.text ?? "(unnamed)"
       const sectionUUID = sec.catalogSectionUUID
 
+      // Track for V2 comparison phase
+      if (!v1SectionItems.has(sectionUUID)) {
+        v1SectionItems.set(sectionUUID, new Set())
+        v1SectionNames.set(sectionUUID, sectionName)
+      }
+      const sectionItemSet = v1SectionItems.get(sectionUUID)
+
       for (const item of sip.catalogItems ?? []) {
         totalItemsThisPage++
+        sectionItemSet.add(item.uuid)
+        v1AllItemUuids.add(item.uuid)
 
         if (!matchesAnyTerm(item.title)) continue
 
@@ -216,7 +311,75 @@ async function main() {
     }
   }
 
+  // ═════════════════════════════════════════════════════════════════════════
+  //  PHASE B — V2 PER-SECTION PROBE
+  // ═════════════════════════════════════════════════════════════════════════
   console.log("\n" + "═".repeat(60))
+  console.log(" PHASE B — getCatalogPresentationV2 per-section probe")
+  console.log("═".repeat(60))
+
+  const sectionUuids = Array.from(v1SectionItems.keys())
+  const perSection = []   // { uuid, name, v1Count, v2Count, newCount, status }
+  const v2NewItemUuids = new Set()
+
+  for (let i = 0; i < sectionUuids.length; i += V2_CONCURRENCY) {
+    const batch = sectionUuids.slice(i, i + V2_CONCURRENCY)
+    const results = await Promise.all(
+      batch.map(async (uuid) => ({
+        uuid,
+        ...(await fetchSectionV2Safe(uuid)),
+      }))
+    )
+    for (const { uuid, items, errored } of results) {
+      const name = v1SectionNames.get(uuid) ?? "(unnamed)"
+      const v1Set = v1SectionItems.get(uuid) ?? new Set()
+      let newCount = 0
+      for (const it of items) {
+        if (!v1Set.has(it.uuid) && !v1AllItemUuids.has(it.uuid) && !v2NewItemUuids.has(it.uuid)) {
+          v2NewItemUuids.add(it.uuid)
+          newCount++
+        }
+      }
+      const status = errored ? "error" : items.length === 0 ? "empty" : "ok"
+      perSection.push({ uuid, name, v1Count: v1Set.size, v2Count: items.length, newCount, status })
+    }
+  }
+
+  // Per-section table
+  console.log("\n  section name                        | V1 | V2 | NEW | status")
+  console.log("  " + "─".repeat(70))
+  for (const row of perSection) {
+    const truncName = row.name.length > 34 ? row.name.slice(0, 33) + "…" : row.name.padEnd(34)
+    console.log(
+      `  ${truncName} | ${String(row.v1Count).padStart(2)} | ${String(row.v2Count).padStart(2)} | ${String(row.newCount).padStart(3)} | ${row.status}`
+    )
+  }
+
+  const okCount = perSection.filter((r) => r.status === "ok").length
+  const emptyCount = perSection.filter((r) => r.status === "empty").length
+  const errorCount = perSection.filter((r) => r.status === "error").length
+  const v1Total = v1AllItemUuids.size
+  const v2Added = v2NewItemUuids.size
+  const combined = v1Total + v2Added
+  const uplift = v1Total === 0 ? 0 : (v2Added / v1Total) * 100
+  const verdict = uplift >= 25 ? "MEANINGFUL" : uplift >= 10 ? "MARGINAL" : "NOT WORTH IT"
+
+  console.log("\n" + "═".repeat(60))
+  console.log(" V1 + V2 COVERAGE REPORT")
+  console.log("═".repeat(60))
+  console.log(`  V1 unique products       : ${v1Total}`)
+  console.log(`  V1 unique categories     : ${sectionUuids.length}`)
+  console.log(`  V2 additional unique     : ${v2Added}`)
+  console.log(`  Combined unique products : ${combined}`)
+  console.log("")
+  console.log(`  Sections probed via V2   : ${sectionUuids.length}`)
+  console.log(`  Sections with V2 items   : ${okCount}`)
+  console.log(`  Sections returning zero  : ${emptyCount}`)
+  console.log(`  Sections with V2 errors  : ${errorCount}`)
+  console.log("")
+  console.log(`  Coverage uplift          : ${uplift.toFixed(1)}%`)
+  console.log(`  Verdict                  : ${verdict}`)
+  console.log("═".repeat(60) + "\n")
 }
 
 main().catch((err) => {
